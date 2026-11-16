@@ -20,7 +20,7 @@ Then open <http://localhost:8765/floodlight-eleven.html>.
 | --- | --- |
 | WASD / arrow keys | Move the highlighted player |
 | Shift | Sprint |
-| J or Z | Pass in the held direction; tackle without the ball |
+| J or Z | Pass in the held direction; tackle without the ball (mistimed tackles and tackles from behind risk a foul and a card) |
 | K or X (hold) | Charge and release to shoot; hold up or down to pick a corner |
 | L or C | Lofted pass or cross |
 | Space or Q | Switch to the player nearest the ball |
@@ -34,5 +34,7 @@ On a phone there is an on-screen joystick and buttons. Hold the phone sideways.
 - Goalkeepers that position, dive, catch and parry
 - Ball physics with bounces, rolling friction, posts and crossbar
 - Throw-ins, corners, goal kicks, kick-offs, half time and full time
+- Offside, judged at the moment of the pass and flagged when the offside player receives the ball
+- Fouls with free kicks and penalties, yellow cards, second yellows and straight reds; a sent-off player leaves the pitch for the rest of the match
 - Scoreboard, match clock, mini-map and shot-power bar
 - Choice of side (or watch), match length and difficulty
