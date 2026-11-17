@@ -1,0 +1,399 @@
+{
+  "meta": {
+    "commit": "9713330",
+    "dirty": true,
+    "date": "2026-11-17 12:10 UTC",
+    "browser": "153.0.8010.12",
+    "os": "linux 6.18.44-fc-v553",
+    "secs": 50.801
+  },
+  "seed": 20261117,
+  "results": [
+    {
+      "id": "VC-01",
+      "title": "Start-up, delivery and start menu",
+      "reqs": [
+        "SWR-001",
+        "SWR-002"
+      ],
+      "method": "T, I",
+      "pass": true,
+      "evidence": "Repository has 1 HTML file (floodlight-eleven.html); one external script (https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js), three.js REVISION 128; stylesheets only from Google Fonts. Menu shown on load. Defaults side=0 (Harbor City), len=300 s, diff=1 (Normal). Options: Harbor City / Northvale / Watch; 3 min / 5 min / 8 min; Easy / Normal / Hard; button \"KICK OFF\"."
+    },
+    {
+      "id": "VC-02",
+      "title": "Pitch and goal dimensions",
+      "reqs": [
+        "SWR-010"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "Pitch 105 × 68; goal 7.32 × 2.44; penalty area 16.5 deep × 40.32 wide."
+    },
+    {
+      "id": "VC-03",
+      "title": "Squads and 4-4-2 formation",
+      "reqs": [
+        "SWR-011"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "Harbor City: 11 players, GK-DF-MF-FW 1-4-4-2, numbers 1,2,3,4,5,6,7,8,9,10,11; Northvale: 11 players, GK-DF-MF-FW 1-4-4-2, numbers 1,2,3,4,5,6,7,8,9,10,11"
+    },
+    {
+      "id": "VC-04",
+      "title": "Controlled player assignment",
+      "reqs": [
+        "SWR-012"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "Watch mode: user team none, controlled player none. Playing as Northvale: 200 samples over 100 s of play, 0 with no controlled player, wrong team or the goalkeeper."
+    },
+    {
+      "id": "VC-05",
+      "title": "Match clock, half time and change of ends",
+      "reqs": [
+        "SWR-020",
+        "SWR-021"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "3-minute match (L=180 s). Half time at 90.02 s of play = 45.01'. Clock moved in 0 of 566 steps with the ball out of play. Attacking directions 1/-1 → -1/1. First-half kick-off HAR, second-half kick-off NOR."
+    },
+    {
+      "id": "VC-06",
+      "title": "Full time, result screen and replay reset",
+      "reqs": [
+        "SWR-022",
+        "SWR-045"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "Full time at 180.00 s of play (90'); full-time screen shown with 0–1 (expected 0–1) and \"Northvale take the derby. Cards: HAR 1Y 0R · NOR 2Y 1R\". Player sent off before full time: true. After PLAY AGAIN: score 0-0, squads 11/11 (22 players), cards 0/0, red markers 0, state kickoff."
+    },
+    {
+      "id": "VC-07",
+      "title": "Kick-off positions",
+      "reqs": [
+        "SWR-023"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "Opening kick-off: 0 players outside their own half, nearest opponent 9.62 from the ball. Kick-off after a goal: 0 outside own half, nearest opponent 9.62, ball 0.04 from the centre spot."
+    },
+    {
+      "id": "VC-08",
+      "title": "Goal scored, over the bar, restart",
+      "reqs": [
+        "SWR-024"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "Ball under the bar: state \"goal\", score +1. Restart: kick-off by NOR (team that conceded: NOR), ball 0.04 from the centre spot. Ball over the bar (y=3.2): score +0, restart \"goalkick\"."
+    },
+    {
+      "id": "VC-09",
+      "title": "Throw-in",
+      "reqs": [
+        "SWR-025"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "last touch HAR → throw to NOR (taker NOR) at x=10.00, z=33.60; last touch NOR → throw to HAR (taker HAR) at x=10.00, z=-33.60. Crossing point x≈10."
+    },
+    {
+      "id": "VC-10",
+      "title": "Corner kick and goal kick",
+      "reqs": [
+        "SWR-026"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "Over the goal line at z=10, last touch by defenders (NOR) → corner to HAR at (52.10, 33.60). Last touch by attackers (HAR) → goalkick to NOR, taker is the goalkeeper: true, goalkeeper has the ball when it is taken: true."
+    },
+    {
+      "id": "VC-11",
+      "title": "Offside offence penalised",
+      "reqs": [
+        "SWR-030",
+        "SWR-031"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "Receiver 34 m vs second-last defender 26 m, ball at 12 m → state \"restart\", restart \"freekick\" to defending team: true, offside count +1, banner \"OFFSIDEFREE KICK · NORTHVALE\". Receiver 30 m vs second-last defender 26 m, ball at 12 m → state \"restart\", restart \"freekick\" to defending team: true, offside count +1, banner \"OFFSIDEFREE KICK · NORTHVALE\"."
+    },
+    {
+      "id": "VC-12",
+      "title": "No offside: onside, own half, throw-in",
+      "reqs": [
+        "SWR-030"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "onside: receiver 22, line 26, ball 12 → ball won by receiver, offside +0; ownHalf: receiver -5, line -10, ball -25 → ball won by receiver, offside +0; throwIn: receiver 34, line 26, ball 12, from throw → ball won by receiver, offside +0; corner: receiver 34, line 26, ball 12, from corner → ball won by receiver, offside +0."
+    },
+    {
+      "id": "VC-13",
+      "title": "Standing-tackle fouls by direction",
+      "reqs": [
+        "SWR-040"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "From the front: 5/60 fouls (8.3%), 40 balls won. From behind: 36/60 fouls (60.0%), 17 balls won."
+    },
+    {
+      "id": "VC-14",
+      "title": "Free kick: award, wall distance, kick taken",
+      "reqs": [
+        "SWR-041",
+        "SWR-042"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "#1: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.16 at the kick, taker pass ; #2: freekick to fouled team true, 0.00 from foul spot, nearest opponent 11.35 at the kick, taker pass ; #3: freekick to fouled team true, 0.00 from foul spot, nearest opponent 14.96 at the kick, taker pass ; #4: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.17 at the kick, taker pass ; #5: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.19 at the kick, taker pass ."
+    },
+    {
+      "id": "VC-15",
+      "title": "Penalty kick: award, spot, positions, kick taken",
+      "reqs": [
+        "SWR-041",
+        "SWR-042"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "#1: penalty to fouled team true, spot 11.00 from goal line at z=0.00, players inside area at kick: none, taker shot; #2: penalty to fouled team true, spot 11.00 from goal line at z=0.00, players inside area at kick: none, taker shot; #3: penalty to fouled team true, spot 11.00 from goal line at z=0.00, players inside area at kick: none, taker shot; #4: penalty to fouled team true, spot 11.00 from goal line at z=0.00, players inside area at kick: none, taker shot."
+    },
+    {
+      "id": "VC-16",
+      "title": "Yellow and red cards",
+      "reqs": [
+        "SWR-043",
+        "SWR-045"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "Third foul: \"YELLOW CARDNORTHVALE No. 7 · FREE KICK\" (restart freekick, sent off false); Foul by a player already booked: \"RED CARDSECOND YELLOW · NORTHVALE No. 8 · FREE KICK\" (restart freekick, sent off true); Last-man foul outside the area: \"RED CARDNORTHVALE No. 11 · FREE KICK\" (restart freekick, sent off true); Last-man foul inside the area: \"YELLOW CARDNORTHVALE No. 4 · PENALTY\" (restart penalty, sent off false)."
+    },
+    {
+      "id": "VC-17",
+      "title": "Sending-off effects, minimum of seven, card display",
+      "reqs": [
+        "SWR-044",
+        "SWR-045"
+      ],
+      "method": "T, I",
+      "pass": true,
+      "evidence": "After one red: Northvale 10 players, sent-off No. 3 still simulated: false, 21 players on the pitch, 1 red marker. At 7 players a last-man foul gave \"FOULFREE KICK · HARBOR CITY\", squad stays 7, offender sent off: false. Red markers 4 = reds 4. Pause screen: \"Harbor City 0 – 0 Northvale · 0' · HAR 0Y 0R · NOR 0Y 4R\". Sent-off player visible while the card is shown: true, after 3 s: false. Screenshot: docs/verification/red-card.png."
+    },
+    {
+      "id": "VC-18",
+      "title": "Ball physics: bounce, roll, woodwork",
+      "reqs": [
+        "SWR-050"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "Dropped from 3.0: first rebound peak 0.92, at rest after 2.13 s. Rolled at 10: speed never increased (true), stopped after 13.2 (final speed 0.000). Shot at the post: rebound velocity -10.1 toward the field, goals +0. Shot at the crossbar: -11.8, goals +0."
+    },
+    {
+      "id": "VC-19",
+      "title": "Goalkeeper dives to the crossing point",
+      "reqs": [
+        "SWR-060"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "aim z=-3: keeper 0.69 from the ball at the crossing, overshoot 0.00, parried; aim z=-2: keeper 0.21 from the ball at the crossing, overshoot 0.47, parried; aim z=-1: keeper 0.05 from the ball at the crossing, overshoot 0.05, parried; aim z=1: keeper 0.06 from the ball at the crossing, overshoot 0.34, parried; aim z=2: keeper 0.40 from the ball at the crossing, overshoot 0.00, goal; aim z=3: keeper 0.52 from the ball at the crossing, overshoot 0.00, goal. Shots at 24 from 18 out."
+    },
+    {
+      "id": "VC-20",
+      "title": "Receive assist",
+      "reqs": [
+        "SWR-071"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "No key held: control on receiver true, ball received true. Holding toward goal (along the pass): control on receiver true, ball received true. Holding sideways: control on receiver true, ball received true. Pass running across in front, user pushing away: assist cancelled true on the first frame and the player runs where the user pushes (target speed 6.4 in the pushed direction). After that the existing auto-switch may hand control to whoever is nearest the ball."
+    },
+    {
+      "id": "VC-21",
+      "title": "Pass assist avoids blocked lanes; lofted pass",
+      "reqs": [
+        "SWR-070"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "Two team-mates ahead, one with an opponent in the lane. J: ground pass to the clear-lane mate. L: lofted pass (lob flag true), ball peak height 1.3."
+    },
+    {
+      "id": "VC-22",
+      "title": "Kicks are only sometimes blocked at source",
+      "reqs": [
+        "SWR-072"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "Opponent 0.9 in front of the passer blocked 14 of 80 passes (17.5%)."
+    },
+    {
+      "id": "VC-23",
+      "title": "Sliding tackle: trigger, motion, outcome",
+      "reqs": [
+        "SWR-080",
+        "SWR-081"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "From the front: 40 slides, ball won 36 (90.0%), fouls 4 (10.0%; 2 yellow, 0 red), carrier kept ball 0. From the side: 40 slides, ball won 36 (90.0%), fouls 4 (10.0%; 0 yellow, 0 red), carrier kept ball 0. From behind: 40 slides, ball won 0 (0.0%), fouls 40 (100.0%; 34 yellow, 4 red), carrier kept ball 0. Free slide: lasted 0.68 s, covered 3.14, recovery 0.40 s, second slide straight after: false. K while own team has the ball: slide false. K during an opponents' free kick: slide false."
+    },
+    {
+      "id": "VC-24",
+      "title": "Keyboard controls",
+      "reqs": [
+        "SWR-090"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "1 s of D: 5.3 along x; →: 5.3; W: -5.3 along z; ↓: 5.3; A: -5.3; D+Shift: 6.3. J ground, Z ground, L lob, C lob pass. K: power bar true, shot true; X: power bar true, shot true. Space switched true, Q switched true. V: BROADCAST CAM → PITCHSIDE CAM → TACTICAL CAM → BROADCAST CAM. M: SOUND OFF / SOUND ON. P,P,Esc,Esc paused: true,false,true,false."
+    },
+    {
+      "id": "VC-25",
+      "title": "Touch controls",
+      "reqs": [
+        "SWR-091"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "Emulated phone 844 × 390 with touch (coarse pointer true). Touch controls shown true, keyboard hints shown false, mini-map shown false. Buttons: SWITCH, LOB, SPRINT, PASS, SHOOT. Shoot button reads \"SLIDE\" when defending, \"SHOOT\" in possession. Tapping PASS passed the ball: true. Screenshot: docs/verification/touch-landscape.png."
+    },
+    {
+      "id": "VC-26",
+      "title": "Heads-up display",
+      "reqs": [
+        "SWR-092"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "Scoreboard shown true: HAR 0–1 NOR, clock 3' (expected 3'), 1ST HALF. Camera label true, mini-map true, key hints true when playing and false in Watch mode, power bar false when not shooting. Screenshot: docs/verification/hud-desktop.png."
+    },
+    {
+      "id": "VC-27",
+      "title": "Pause, resume, back to menu",
+      "reqs": [
+        "SWR-093"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "P showed the pause screen true (\"Harbor City 0 – 0 Northvale · 0'\"); clock frozen for 1 s true. RESUME hid it true; the clock then advanced 2.25 s of play in 3 s of real time. Esc then \"Back to menu\" returned to the start menu true."
+    },
+    {
+      "id": "VC-28",
+      "title": "Audio start, whistle and mute",
+      "reqs": [
+        "SWR-094"
+      ],
+      "method": "T, D",
+      "pass": true,
+      "evidence": "Audio contexts before KICK OFF 0, after 1. Oscillators (whistle) 0 → 2 at kick-off. Buffer sources (crowd, kicks) 1 → 13 after 10 s of play. M: \"SOUND OFF\", then \"SOUND ON\". Whether the sound is actually heard is checked by demonstration (VC-31 session)."
+    },
+    {
+      "id": "VC-29",
+      "title": "Responsive layout",
+      "reqs": [
+        "SWR-095"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "390×844: no horizontal scroll on menu true / in play true; menu fits true; scoreboard fits true; joystick fits true; buttons fit true. 844×390: no horizontal scroll on menu true / in play true; menu fits true; scoreboard fits true; joystick fits true; buttons fit true. 1280×720: no horizontal scroll on menu true / in play true; menu fits true; scoreboard fits true. Screenshot: docs/verification/phone-portrait.png."
+    },
+    {
+      "id": "VC-30",
+      "title": "Simulation step cost",
+      "reqs": [
+        "SWR-100"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "3600 steps (60 s of match time) in 87 ms of CPU: 0.024 ms per step on the verification machine."
+    },
+    {
+      "id": "VC-31",
+      "title": "Frame rate on GPU hardware",
+      "reqs": [
+        "SWR-101",
+        "SWR-094"
+      ],
+      "method": "D",
+      "pass": null,
+      "evidence": "Manual demonstration: play a 5-minute match on a computer with a hardware GPU and watch the browser's frame-rate meter (Chrome DevTools > Rendering > Frame rendering stats). Not run here: the headless verification machine has no GPU, so software-rendered frame rates would not be meaningful."
+    },
+    {
+      "id": "VC-32",
+      "title": "Simulated computer-vs-computer matches",
+      "reqs": [
+        "SWR-032",
+        "SWR-061",
+        "SWR-073",
+        "SWR-082"
+      ],
+      "method": "A",
+      "pass": true,
+      "stats": {
+        "shots": 113,
+        "goals": 19,
+        "pass_gr": 694,
+        "recv_gr": 572,
+        "pass_lob": 652,
+        "recv_lob": 483,
+        "upass_gr": 0,
+        "urecv_gr": 0,
+        "ulost_near": 0,
+        "slides": 40,
+        "offs": 4,
+        "fouls": 33,
+        "yel": 14,
+        "reds": 2
+      },
+      "evidence": "10 matches of 5 minutes, both teams computer-controlled. Shots 113, goals 19: conversion 16.8% (1.9 goals per match). Ground passes received 572/694 (82.4%). Lofted passes received 483/652 (74.1%). Per match: sliding tackles 4.0, offsides 0.4, fouls 3.3, yellow cards 1.4, red cards 0.20."
+    },
+    {
+      "id": "VC-33",
+      "title": "Scripted-user pass completion",
+      "reqs": [
+        "SWR-073"
+      ],
+      "method": "A",
+      "pass": true,
+      "stats": {
+        "shots": 48,
+        "goals": 4,
+        "pass_gr": 160,
+        "recv_gr": 140,
+        "pass_lob": 103,
+        "recv_lob": 70,
+        "upass_gr": 114,
+        "urecv_gr": 101,
+        "ulost_near": 1,
+        "slides": 13,
+        "offs": 2,
+        "fouls": 11,
+        "yel": 6,
+        "reds": 0
+      },
+      "evidence": "6 matches of 5 minutes as Harbor City. The scripted user dribbles toward goal, passes with J every 0.7–1.7 s and keeps holding the forward key for 0.5 s after each pass. User ground passes received 101/114 (88.6%); 1 lost by the receiver within 1.5 of the ball, the rest intercepted on the way."
+    },
+    {
+      "id": "VC-34",
+      "title": "No script errors across the whole run",
+      "reqs": [
+        "SWR-003"
+      ],
+      "method": "T",
+      "pass": true,
+      "evidence": "0 uncaught errors or console errors (other than blocked web-font requests) were recorded across every page and match in this run, including 16 complete 5-minute matches and several 3-minute matches."
+    }
+  ],
+  "pageErrors": []
+}

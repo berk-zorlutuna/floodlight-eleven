@@ -42,3 +42,21 @@ When a pass is played to you, your player runs onto the ball by himself; push th
 - Fouls with free kicks and penalties, yellow cards, second yellows and straight reds; a sent-off player leaves the pitch for the rest of the match
 - Scoreboard, match clock, mini-map and shot-power bar
 - Choice of side (or watch), match length and difficulty
+
+## Requirements and verification
+
+| Document | Contents |
+| --- | --- |
+| [System Requirements](docs/SYSTEM_REQUIREMENTS.md) | What the game must do, as seen by a player (SYS-01 to SYS-21) |
+| [Software Requirements](docs/SOFTWARE_REQUIREMENTS.md) | Measurable software behaviour, traced to the system requirements (SWR-001 to SWR-101) |
+| [Verification Cases](docs/VERIFICATION_CASES.md) | How each software requirement is verified (VC-01 to VC-34) |
+| [Verification Results](docs/VERIFICATION_RESULTS.md) | Latest run: result and evidence per case, requirement coverage, defects found |
+
+The automated cases run in headless Chromium:
+
+```bash
+npm install        # three.js r128, so the run works offline
+npm run verify     # needs Playwright with Chromium
+```
+
+The run rewrites `docs/VERIFICATION_RESULTS.md` and `docs/verification/results.json`, and saves screenshots in `docs/verification/`. It exits with a non-zero code if any case fails.

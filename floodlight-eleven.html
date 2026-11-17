@@ -543,6 +543,7 @@ function toMenu(){paused=false;attract=true;ui.pause.hidden=true;ui.ft.hidden=tr
   for(const t of teams){t.cfg=NORMAL;t.score=0;}teams[0].dir=1;teams[1].dir=-1;resetSquads();setupKickoff(teams[0],true);}
 
 // ---------- actions ----------
+function emit(k,d){const h=window.__fe&&window.__fe.onEvent;if(h)h(k,d);} // test hook
 function offsideLine(t){ // furthest x (in t's attacking direction) a player of t may stand at
   const xs=t.opp.players.map(o=>o.x*t.dir).sort((a,b)=>b-a);
   return Math.max(xs.length>1?xs[1]:0,ball.x*t.dir,0);
@@ -565,13 +566,13 @@ function passTo(p,q,lob){
   const tx=clamp(q.x+q.vx*lead,-HL+1,HL-1),tz=clamp(q.z+q.vz*lead,-HW+1,HW-1);
   const d=kickTo(p,tx,tz,lob);
   for(const o of all)if(o.receiving>0&&o.team===q.team)o.receiving=0;
-  q.receiving=d/13+1.4;
+  q.receiving=d/13+1.4;emit('pass',{p,q,lob});
   if(humanTeam===q.team&&q.role!=='GK')ctrl=q;
 }
 function shoot(p,power,aimZ,aimH){
   const gx=p.team.dir*HL,dx=gx-ball.x,dz=aimZ-ball.z,d=hyp(dx,dz)||1;
   const speed=16+power*14,T=d/speed,vy=(aimH-BR+0.5*G*T*T)/T;
-  kick(p,dx/d*speed,vy,dz/d*speed,0.4+power*0.6);
+  kick(p,dx/d*speed,vy,dz/d*speed,0.4+power*0.6);emit('shot',{p});
 }
 function steal(q,c){
   ball.owner=q;ball.lastTouch=q.team;c.stun=0.55;c.cool=0.7;q.cool=0;q.decideT=0.35;sfx.kick(0.15);
@@ -612,7 +613,7 @@ function foul(q,c,behind,sev){ // q fouls c; sev scales card odds (sliding fouls
     else if(q.fouls>=3||rnd()<Math.min(0.95,(behind?0.6:0.16)*sev))card='yellow';
     if(card==='yellow'){q.yellows++;t.yel++;if(q.yellows>=2){card='red';second=true;}}
     if(card==='red'&&t.players.length<=7)card=null;
-    if(card){cardFx.p=q;cardFx.t=2.5;cardMesh.material.color.setHex(card==='red'?0xe5342b:0xffd34d);cardMesh.visible=true;}
+    if(card){if(cardFx.p&&cardFx.p.off)cardFx.p.mesh.g.visible=false;cardFx.p=q;cardFx.t=2.5;cardMesh.material.color.setHex(card==='red'?0xe5342b:0xffd34d);cardMesh.visible=true;}
     if(card==='red')sendOff(q);
   }
   const px=-t.dir*(HL-11);
@@ -624,7 +625,7 @@ function startSlide(p,iv){
   if(iv&&(iv.x||iv.z)){const c=iv.x*dx+iv.z*dz;if(c>0.5){dx+=iv.x;dz+=iv.z;}else{dx=iv.x;dz=iv.z;}m=hyp(dx,dz)||1;dx/=m;dz/=m;}
   const sp=Math.max(9.5,hyp(p.vx,p.vz)+2.5);
   p.vx=dx*sp;p.vz=dz*sp;p.sdx=dx;p.sdz=dz;p.slideT=0.65;p.slideCD=1.6;p.slid=false;p.fa=Math.atan2(dx,dz);p.receiving=0;
-  sfx.slide();return true;
+  sfx.slide();emit('slide',{p});return true;
 }
 function poke(p,c){ // slide knocks the ball loose in the direction of travel
   const sp=hyp(p.vx,p.vz);
@@ -644,6 +645,26 @@ function slideContact(p){
       poke(p,c);return;}
     if(dist(c,fx,fz)<0.75){p.slid=true;foul(p,c,behind,behind?2.2:1.5);}
   }else if(!c&&bd<0.9&&ball.y<0.6){p.slid=true;poke(p,null);}
+}
+// set pieces: opponents 9.15 from the ball; at a penalty everyone but the kicker and keeper outside the area and arc
+function restartReady(){
+  const r=restart;if(!r)return true;
+  if(r.type==='freekick'||r.type==='corner'){for(const p of r.team.opp.players)if(dist(p,ball.x,ball.z)<9.15)return false;}
+  else if(r.type==='penalty'){const ad=r.team.dir;for(const p of all){if(p===r.taker||(p.role==='GK'&&p.team!==r.team))continue;
+    if((p.x*ad>HL-BOX_D&&Math.abs(p.z)<BOX_W)||dist(p,ball.x,ball.z)<9.15)return false;}}
+  return true;
+}
+function enforceRestart(){
+  const r=restart,ad=r.team.dir;
+  for(const p of all){
+    if(p===r.taker)continue;
+    if(r.type==='penalty'){if(p.role==='GK'&&p.team!==r.team)continue;if(p.x*ad>HL-BOX_D-0.3&&Math.abs(p.z)<BOX_W+0.3)p.x=ad*(HL-BOX_D-1);}
+    else if(p.team===r.team||(r.type!=='freekick'&&r.type!=='corner'))continue;
+    const dx=p.x-ball.x,dz=p.z-ball.z,d=hyp(dx,dz);
+    if(d<9.3){const s=9.3/(d||1);p.x=clamp(ball.x+dx*s,-HL+0.3,HL-0.3);p.z=clamp(ball.z+dz*s,-HW+0.3,HW-0.3);
+      if(dist(p,ball.x,ball.z)<9.15){const a=Math.atan2(-ball.z,-ball.x);p.x=ball.x+Math.cos(a)*9.3;p.z=ball.z+Math.sin(a)*9.3;}} // pushed against a line: go toward the centre instead
+    p.vx=p.vz=0;
+  }
 }
 function offside(p){
   p.team.offs++;
@@ -739,7 +760,7 @@ function keeperAI(p,dt){
   if(ball.owner===p)return carrierAI(p,dt);
   if(p.diveT>0){ // dive toward where the ball will cross, not past it
     if(!ball.owner&&ball.vx*-dir>4){const tc=(p.x-ball.x)/ball.vx;if(tc>0)p.diveZ=clamp(ball.z+ball.vz*tc,-GW-0.6,GW+0.6);}
-    p.dvx=0;p.dvz=clamp((p.diveZ-p.z)*9,-9.5,9.5);return;}
+    const dz=p.diveZ-p.z;p.dvx=0;p.dvz=sgn(dz)*Math.min(9.5,Math.sqrt(2*28*Math.abs(dz)));return;} // brakes in time to stop on the line of the ball
   if(state==='play'&&!ball.owner){
     const towards=-dir*ball.vx;
     if(towards>7&&Math.abs(ball.x-gx)<40){
@@ -750,7 +771,7 @@ function keeperAI(p,dt){
           const dz=zc-p.z;
           // dive once the ball can no longer be reached on foot
           if(p.diveCD<=0&&tc<0.75&&Math.abs(dz)>0.6&&(tc<0.45||Math.abs(dz)>5.5*tc)){p.diveT=0.8;p.diveDir=sgn(dz);p.diveZ=clamp(zc,-GW-0.6,GW+0.6);p.diveCD=1.6;}
-          moveTo(p,p.x,clamp(zc,-GW-0.4,GW+0.4),8.5,0.25);return;
+          const tz=clamp(zc,-GW-0.4,GW+0.4)-p.z;p.dvx=0;p.dvz=sgn(tz)*Math.min(8.5,Math.sqrt(2*16*Math.abs(tz)));return;
         }
       }
     }
@@ -797,7 +818,7 @@ function outfieldAI(p,dt){
     }
   }
   const f=formationTarget(p),d=dist(p,f.x,f.z);
-  moveTo(p,f.x,f.z,d>7?spd*0.85:spd*0.55,2.5);
+  moveTo(p,f.x,f.z,d>7||state==='restart'?spd*0.85:spd*0.55,2.5);
 }
 function computeChasers(){
   for(const t of teams){t.chaser=null;t.presser=null;t.offLine=offsideLine(t);}
@@ -823,7 +844,8 @@ function computeChasers(){
 const shootBtn=document.querySelector('#tbtns [data-k="shoot"]');
 function receiveAssist(p,iv,sprint){ // the pass target runs onto the ball unless the player pulls clearly away
   const rs=sprint?8.1:7,ip=intercept(p,rs),dx=ip.x-p.x,dz=ip.z-p.z,d=hyp(dx,dz);
-  if((iv.x||iv.z)&&d>0.5&&(iv.x*dx+iv.z*dz)/d<-0.5){p.receiving=0;return false;}
+  const bs=hyp(ball.vx,ball.vz)||1,along=(iv.x*ball.vx+iv.z*ball.vz)/bs; // pushing along the ball's path means running onto it
+  if((iv.x||iv.z)&&d>0.5&&(iv.x*dx+iv.z*dz)/d<-0.5&&along<0.3){p.receiving=0;return false;}
   moveTo(p,ip.x,ip.z,rs,0.4);return true;
 }
 function canShoot(){return !ball.lock||ball.lock==='freekick'||ball.lock==='penalty';}
@@ -1067,7 +1089,9 @@ function step(dt){
   }else if(state==='halftime'&&stateT<=0){
     half=2;for(const t of teams)t.dir*=-1;setupKickoff(firstKick.opp,true);banner('SECOND HALF','',1400);
   }else if(state==='restart'){
-    stateT-=dt;if(stateT<=0){const tk=restart.taker;ball.owner=tk;ball.lastTouch=restart.team;ball.lock=restart.type==='goalkick'?null:restart.type;ball.gkick=restart.type==='goalkick';tk.decideT=restart.type==='penalty'?1.1:0.7;tk.holdT=restart.type==='goalkick'?0.3:0;state='play';restart=null;}
+    stateT-=dt;
+    if(stateT<=0&&!restartReady()){restart.wait=(restart.wait||0)+dt;if(restart.wait>=2.5)enforceRestart();} // wait for players to retreat, then move stragglers
+    if(stateT<=0&&restartReady()){const tk=restart.taker;ball.owner=tk;ball.lastTouch=restart.team;ball.lock=restart.type==='goalkick'?null:restart.type;ball.gkick=restart.type==='goalkick';tk.decideT=restart.type==='penalty'?1.1:0.7;tk.holdT=restart.type==='goalkick'?0.3:0;state='play';restart=null;}
   }
   computeChasers();
   const live=state==='play'||state==='restart';
@@ -1160,13 +1184,16 @@ function updateHUD(){
 let last=performance.now(),acc=0;const STEP=1/60;
 function frame(now){
   let dt=Math.min(0.1,(now-last)/1000);last=now;
-  if(!paused&&state!=='fulltime'){acc+=dt;let n=0;while(acc>=STEP&&n<5){step(STEP);acc-=STEP;n++;}if(n===5)acc=0;}
+  if(!paused&&!(window.__fe&&window.__fe.hold)&&state!=='fulltime'){acc+=dt;let n=0;while(acc>=STEP&&n<5){step(STEP);acc-=STEP;n++;}if(n===5)acc=0;}
   updateMeshes(dt);updateCamera(dt);updateHUD();
   renderer.render(scene,camera);
   requestAnimationFrame(frame);
 }
 
-window.__fe={teams,ball,all,foul,offside,startSlide,get state(){return state;},get clock(){return clock;},get ctrl(){return ctrl;},sim(n){for(let i=0;i<n&&state!=='fulltime';i++)step(STEP);updateMeshes(STEP);updateCamera(1);updateHUD();renderer.render(scene,camera);}};
+// test hooks used by tests/verify.js (no effect on play)
+window.__fe={teams,ball,all,foul,offside,startSlide,passTo,toMenu,get state(){return state;},get clock(){return clock;},get ctrl(){return ctrl;},
+  dims:{HL,HW,GW,GH,BOX_D,BOX_W},get restart(){return sp;},get half(){return half;},get paused(){return paused;},get humanTeam(){return humanTeam;},
+  get matchLen(){return matchLen;},gameMin,settings,step(n){for(let i=0;i<n&&state!=='fulltime';i++)step(STEP);},sim(n){for(let i=0;i<n&&state!=='fulltime';i++)step(STEP);updateMeshes(STEP);updateCamera(1);updateHUD();renderer.render(scene,camera);}};
 // boot (with live-update snapshot support in the artifact viewer)
 function start(data){
   try{window.claude?.hot?.snapshot?.(()=>({inMatch:!attract&&state!=='fulltime',s0:teams[0].score,s1:teams[1].score,clock,half,settings:{...settings}}));}catch(e){}

@@ -1,0 +1,12 @@
+{
+  "name": "floodlight-eleven",
+  "version": "1.0.0",
+  "private": true,
+  "description": "3D 11-a-side football in the browser",
+  "scripts": {
+    "verify": "node tests/verify.js"
+  },
+  "devDependencies": {
+    "three": "0.128.0"
+  }
+}
