@@ -13,3 +13,16 @@ The first full run on 17 November 2026 failed 7 cases. Four of the failures were
 | VC-20 | After the assist was cancelled, the test measured several frames later, after the game's auto-switch had handed control to another player. | Test error | The test now checks the first frame after the cancel. |
 | VC-23 | The free-slide measurement used a player who was not the controlled one. | Test error | The test player is made the controlled player first. |
 | VC-25 | The test read the shoot button's label while the opponents had the ball, so it read SLIDE. | Test error | Buttons are now identified by their role, not their label. |
+
+### Version 1.1 (career mode, squads, club identity, match depth)
+
+Found while verifying the new features, and corrected before this run:
+
+| Case | Finding | Kind | Correction |
+| --- | --- | --- | --- |
+| VC-29 | The game file had no viewport tag, so phones laid it out 980 px wide and shrank it. With the tag added, the menu sheet was 36 px wider than a 390 px screen, because its padding was added to its width. | Software defects | Added the viewport tag; sheets now include their padding in their width. |
+| VC-46 | A through ball with the forward key held went to a team-mate far out on the wing instead of the runner ahead. Space and distance outweighed the held direction. | Software defect | Direction now dominates; very long balls and team-mates already offside are penalised. |
+| VC-46 | Computer teams played 0.6 through balls a match (required: at least 1). | Software defect | Runners up to 7 behind the defensive line are now considered, with slightly less space needed. Now about 3 per match. |
+| VC-41 | Shooting rating changed shot accuracy too little: 91% v 84% on target for 95 v 40. | Software defect | The shooting rating now has a stronger effect on aim error. |
+| — | Stamina first stayed near full all match (recovery outweighed drain), then emptied by half time. | Software defect | Drain and recovery rates re-tuned; average outfield stamina is now about 0.7 at full time. |
+| VC-41, VC-47, VC-48 | Test helpers reused one kick ID, so the keeper ignored repeat shots; they did not clear skill-move cooldowns; and the half-time check set stamina before players had stopped running. | Test errors | Corrected in the test helpers. |

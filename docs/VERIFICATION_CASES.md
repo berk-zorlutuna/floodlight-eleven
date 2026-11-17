@@ -4,10 +4,10 @@
 | --- | --- |
 | Document | Software Verification Cases |
 | Software | `floodlight-eleven.html` |
-| Version | 1.0 |
+| Version | 1.1 |
 | Verifies | [Software Requirements](SOFTWARE_REQUIREMENTS.md) |
 | Results | [Verification Results](VERIFICATION_RESULTS.md) |
-| Implementation | `tests/verify.js` (automated); VC-31 is manual |
+| Implementation | `tests/verify.js` (automated); VC-31 is manual. VC-34 runs last, after VC-50. |
 
 ## 1. Approach
 
@@ -280,7 +280,7 @@ Playwright with Chromium must be available (`npm i -D playwright && npx playwrig
 - **Pass if:**
   - the pointer is coarse
   - the touch controls are shown; keyboard hints and mini-map are hidden
-  - the buttons are SWITCH, LOB, SPRINT, PASS and SHOOT
+  - the seven buttons are SWITCH, LOB, SPRINT, SKILL, PASS, SHOOT and THRU
   - the label reads SLIDE when defending and SHOOT in possession
   - tapping PASS passes the ball (`docs/verification/touch-landscape.png`)
 
@@ -353,6 +353,187 @@ Playwright with Chromium must be available (`npm i -D playwright && npx playwrig
   - keeps holding forward for 0.5 s after each pass
 - **Pass if:** at least 70% of the scripted user's ground passes reach the intended receiver.
 
+### VC-35 — Founding a club
+- **Requirements:** SWR-110 · **Method:** T
+- **Procedure:** With storage cleared, open Career and fill in the form:
+  - name: a 33-character name
+  - short name `tr1x`, crest letters `trx9`
+  - crest: diamond with hoops, main colour purple
+  - home shirt yellow, away shorts black
+  - Hard opposition, 3-minute matches
+
+  Then press FOUND CLUB.
+- **Pass if:**
+  - the name is cut to 22 characters, the short name becomes `TR1` and the crest letters `TRX` (also in the preview)
+  - every choice is stored
+  - the club starts in Division 5 with 1,000 coins, 18 players (2-6-6-4), a level-1 stadium and an 18-player line-up, and the hub is shown
+
+### VC-36 — Season structure, league table and cup
+- **Requirements:** SWR-111, SWR-112, SWR-114 · **Method:** T
+- **Procedure:** Found a club and check the fixture list. Simulate through to the last matchday, checking the table and cup. Then play the last matchday.
+- **Pass if:**
+  - there are 14 matchdays of 4 matches with all 8 clubs each time, and 56 distinct home/away pairings
+  - events run `LLLC0LLLLC1LLLLC2LLL`
+  - after 13 matchdays every club has 13 played with W+D+L = 13, total goals for equal goals against, and the table is sorted by points, goal difference and goals
+  - the cup has 4, 2 and 1 ties with a winner, each winner matching the score or the shoot-out (drawn ties always have one)
+  - the last matchday shows the end-of-season screen and starts season 2
+
+### VC-37 — Promotion, relegation and prize money
+- **Requirements:** SWR-113 · **Method:** T
+- **Procedure:** Set the league table so the user's club finishes in a chosen place, then end the season. Nine combinations of division (tier 0, 2, 3 and 5) and final place (1st, 2nd, 3rd, 7th and 8th).
+- **Pass if:** each time the final place, the move up or down, the new division, the prize and the coins added all match SWR-113.
+
+### VC-38 — Playing a career fixture in 3D
+- **Requirements:** SWR-115, SWR-130, SWR-131 · **Method:** T
+- **Procedure:**
+  1. Found a club and force the next opponent's home shirt to match the user's.
+  2. Press PLAY MATCH and inspect the match; play to full time and press CONTINUE.
+  3. Start the next fixture and leave it from the pause menu.
+- **Pass if:**
+  - the user controls their own club, with the starting eleven in line-up order
+  - the stadium level is the home club's, and both crests are on the scoreboard
+  - the away team switches to its away kit
+  - after CONTINUE the result is in the table, the result screen matches the score, and the coins added match its total
+  - leaving the next fixture does not use it up or record it, and returns to the career screens
+
+### VC-39 — Match earnings
+- **Requirements:** SWR-116 · **Method:** T
+- **Procedure:** Record a 3–1 win, a 2–2 draw and a 0–1 defeat in league fixtures and read each result's earnings.
+- **Pass if:** each item matches SWR-116:
+  - result bonus × division multiplier
+  - goals × 15 × multiplier
+  - gate receipts within the attendance range for home matches only
+
+  The total equals the coins added.
+
+### VC-40 — Saving, reloading, export, import, delete
+- **Requirements:** SWR-117 · **Method:** T
+- **Procedure:** In a fresh browser context:
+  1. Found a club, simulate two matches and buy a player.
+  2. Reload the page and open Career.
+  3. Export the save.
+  4. Delete the career (confirming the dialog).
+  5. Import the exported file.
+  6. Import an unrelated JSON file.
+- **Pass if:**
+  - after reloading, name, coins, progress, squad size and matches played are identical
+  - the export holds the same club and coins
+  - delete clears the career and its storage entry and shows the create screen
+  - importing the export restores the club
+  - the unrelated file is refused with a message and the career is kept
+
+### VC-41 — Player model and ratings in play
+- **Requirements:** SWR-120, SWR-122 · **Method:** T
+- **Procedure:**
+  1. Check every generated squad player's attributes, overall, potential, name, age and shirt number.
+  2. In a quick match, compare a high rating with a low one for:
+     - run speed (pace 90 v 50)
+     - sideways miss over 120 passes of 25 m (passing 95 v 40)
+     - share of 150 shots from 20 m on target (shooting 95 v 40)
+     - standing tackles won over 60 trials against a 70-rated dribbler (defending 95 v 35)
+     - saves over 60 shots at the keeper (goalkeeping 95 v 40)
+     - stamina used in 5 s of sprinting (stamina 95 v 40)
+- **Pass if:**
+  - the player model is correct and shirt numbers are unique
+  - fast players run more than 10% faster
+  - poor passers miss by more than twice as much
+  - good shooters, good defenders and good keepers each succeed at least 10 points more often
+  - low-stamina players tire at least 30% faster
+
+### VC-42 — Formation and line-up
+- **Requirements:** SWR-121 · **Method:** T
+- **Procedure:**
+  1. On the Squad tab choose 4-3-3.
+  2. Tap a starting forward, then a substitute defender.
+  3. Start a match.
+  4. Leave it and press Auto-pick.
+- **Pass if:**
+  - the eleven has a keeper in slot 1 and the slots read GK, LB, CB, CB, RB, CM, DM, CM, LW, ST, RW
+  - the first tap highlights a row and the second swaps the players and saves the change
+  - the defender's rating shows 8 lower in red
+  - in the match his attributes are scaled by 0.9 in the forward slot
+  - Auto-pick puts a forward back in that slot
+
+### VC-43 — Transfer market
+- **Requirements:** SWR-123 · **Method:** T
+- **Procedure:**
+  1. Check the market's size and prices.
+  2. With 0 coins, check that Buy is disabled for paid players.
+  3. With plenty of coins, buy players up to 25.
+  4. Sell one, then sell down to 16.
+  5. Simulate a match.
+- **Pass if:**
+  - the market has 19 players priced by the value formula
+  - buying takes the price and adds the player to squad and line-up
+  - Buy is disabled with no coins or a full squad
+  - selling pays 60% of value and removes the player
+  - at 16 players Sell is disabled and the eleven is still complete
+  - the market changes after a match
+
+### VC-44 — Player development, ageing and youth
+- **Requirements:** SWR-124 · **Method:** T
+- **Procedure:**
+  1. Simulate 12 matches, counting improvements.
+  2. Set three players to 20 with room to grow, three to 32 and five to 36, then end the season.
+- **Pass if:**
+  - at least one starter improves during the 12 matches
+  - every remaining player is a year older
+  - the 20-year-olds all improve and the 32-year-olds all decline
+  - at least one 36-year-old retires
+  - any youth players are 17, and the squad is at least 18
+  - the season report lists retirements and youth players, and the new line-up has a keeper in goal
+
+### VC-45 — Stadium expansion
+- **Requirements:** SWR-131 · **Method:** T
+- **Procedure:** On the Club tab, check the upgrade button with 1,000 coins, then expand with 1,300 coins. Switch the 3D stadium through levels 1–5.
+- **Pass if:**
+  - the upgrade is disabled at 1,000 coins
+  - expanding reaches level 2 (6,000 seats, shown on screen) and leaves 100 coins
+  - capacities and costs match SWR-131
+  - visible parts by level (end stands, main roof, end roofs) are none, end stands, plus main roof, plus end roofs, all
+
+### VC-46 — Through balls
+- **Requirements:** SWR-140 · **Method:** T, A
+- **Procedure:** 20 trials: the user holds forward and presses I with a runner 12 ahead and a line of defenders behind him. Count the computer teams' through balls from VC-32.
+- **Pass if:**
+  - all 20 are through balls to the runner, at least 18 travel forward into space at least 2 beyond him, and at least 14 reach him
+  - computer teams average at least 1 per match
+
+### VC-47 — Skill moves
+- **Requirements:** SWR-141 · **Method:** T, A
+- **Procedure:** 80 trials each, with and without pressing O, while a defender stays on the ball for 0.35 s. Then measure one move's duration, cooldown, stamina cost and distance, and press O again at once. Count the computer teams' skill moves from VC-32.
+- **Pass if:**
+  - at least 12 steals without the move, none during a started move, and no more than 8 trials where the move did not start
+  - the move lasts about 0.4 s, has a cooldown above 1.25 s, costs 0.03 stamina, carries the ball more than 2, and cannot be repeated at once
+  - computer dribblers average at least 0.5 per match
+
+### VC-48 — Stamina
+- **Requirements:** SWR-142 · **Method:** T, A
+- **Procedure:** Measure stamina used in 5 s of sprinting and of running, and recovered in 5 s standing. Compare running speed at 20% stamina with a fresh player's. Set every player to 0.5 at half time. Read average full-time stamina from VC-32.
+- **Pass if:**
+  - sprinting uses at least 30% more than running, and standing recovers some
+  - a tired player runs below 95% speed
+  - half time brings everyone to at least 0.64
+  - the full-time average is 0.4–0.8
+
+### VC-49 — Substitutions
+- **Requirements:** SWR-143 · **Method:** T, A
+- **Procedure:**
+  1. Playing as Harbor City, pause, open Substitutions and replace a tired player.
+  2. Make four more substitutions.
+  3. Close the panel, then check Watch mode.
+  4. Read the computer teams' substitutions from VC-32.
+- **Pass if:**
+  - the new player comes on with full stamina and the announcement shows
+  - after 5 every button is disabled
+  - Done returns to the pause menu, and the button is hidden in Watch mode
+  - computer teams make some substitutions, never more than 3 per team per match, never before 55'
+
+### VC-50 — Name tag over the controlled player
+- **Requirements:** SWR-144 · **Method:** T
+- **Procedure:** Playing, set the controlled player's stamina to 0.42 and render a frame. Then check Watch mode.
+- **Pass if:** the tag is on screen and reads "number SURNAME" with a 42% stamina bar, and it is hidden in Watch mode.
+
 ### VC-34 — No script errors across the whole run
 - **Requirements:** SWR-003 · **Method:** T
 - **Procedure:** Record every uncaught error and console error on every page throughout the run, apart from the blocked web-font requests. The run includes 16 complete 5-minute matches.
@@ -402,3 +583,23 @@ Playwright with Chromium must be available (`npm i -D playwright && npx playwrig
 | SWR-095 | VC-29 |
 | SWR-100 | VC-30 |
 | SWR-101 | VC-31 |
+| SWR-110 | VC-35 |
+| SWR-111 | VC-36 |
+| SWR-112 | VC-36 |
+| SWR-113 | VC-37 |
+| SWR-114 | VC-36 |
+| SWR-115 | VC-38 |
+| SWR-116 | VC-39 |
+| SWR-117 | VC-40 |
+| SWR-120 | VC-41 |
+| SWR-121 | VC-42 |
+| SWR-122 | VC-41 |
+| SWR-123 | VC-43 |
+| SWR-124 | VC-44 |
+| SWR-130 | VC-38 |
+| SWR-131 | VC-38, VC-45 |
+| SWR-140 | VC-46 |
+| SWR-141 | VC-47 |
+| SWR-142 | VC-48 |
+| SWR-143 | VC-49 |
+| SWR-144 | VC-50 |

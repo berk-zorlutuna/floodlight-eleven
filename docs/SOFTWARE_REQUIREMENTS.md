@@ -4,7 +4,7 @@
 | --- | --- |
 | Document | SWR — Software Requirements Specification |
 | Software | `floodlight-eleven.html` |
-| Version | 1.0 |
+| Version | 1.1 |
 | Parent | [System Requirements](SYSTEM_REQUIREMENTS.md) |
 | Verified by | [Verification Cases](VERIFICATION_CASES.md) · [Verification Results](VERIFICATION_RESULTS.md) |
 
@@ -22,7 +22,7 @@
 **SWR-001 — Delivery.** The software shall be a single HTML file. It shall load three.js r128 from `cdnjs.cloudflare.com` and stylesheets only from Google Fonts, with all other code and styles inline.
 Parent: SYS-01, SYS-02 · Method: T, I · Case: VC-01
 
-**SWR-002 — Start menu.** On load the software shall show a start menu with three options and a KICK OFF button:
+**SWR-002 — Start menu.** On load the software shall show a start menu with three options, a KICK OFF button for a one-off match and a CAREER MODE button:
 - Play as: Harbor City / Northvale / Watch — default Harbor City
 - Match: 3 min / 5 min / 8 min — default 5 min
 - Opposition: Easy / Normal / Hard — default Normal
@@ -185,14 +185,20 @@ Parent: SYS-05 · Method: A · Case: VC-32
 | J / Z | Pass, or standing tackle without the ball |
 | K / X | Hold to charge a shot, shown by a power bar; release to shoot. Slide while defending |
 | L / C | Lofted pass |
+| I | Through ball (SWR-140) |
+| O | Skill move (SWR-141) |
 | Space / Q | Switch to another player when the team is not in possession |
 | V | Cycle three camera views, named on screen |
 | M | Mute / unmute |
-| P / Esc | Pause |
+| P / Esc | Pause; the pause menu also holds substitutions (SWR-143) |
 
 Parent: SYS-12, SYS-13, SYS-15 · Method: T · Case: VC-24
 
-**SWR-091 — Touch controls.** On coarse-pointer (touch) devices the software shall show a joystick and five buttons: SWITCH, LOB, SPRINT, PASS and SHOOT. The keyboard hints and mini-map shall be hidden. SHOOT shall read SLIDE while the opponents have the ball.
+**SWR-091 — Touch controls.** On coarse-pointer (touch) devices the software shall show a joystick and seven buttons:
+- three large: SHOOT, PASS and THRU (through ball)
+- four smaller: LOB, SKILL, SPRINT and SWITCH
+
+The keyboard hints and mini-map shall be hidden. SHOOT shall read SLIDE while the opponents have the ball.
 Parent: SYS-12 · Method: T · Case: VC-25
 
 **SWR-092 — HUD.**
@@ -213,7 +219,178 @@ Parent: SYS-17 · Method: T, D · Case: VC-28
 **SWR-095 — Layout.** At viewport sizes of 390 × 844, 844 × 390 and 1280 × 720 there shall be no horizontal page scroll, and the menu, scoreboard and touch controls shall lie within the viewport.
 Parent: SYS-19 · Method: T · Case: VC-29
 
-### 2.10 Performance
+### 2.10 Career mode
+
+**SWR-110 — Founding a club.** CAREER MODE with no saved career shall open a club-creation screen with:
+- club name, up to 22 characters
+- short name, up to 3 letters or digits, upper-case
+- crest: one of 4 shapes and 5 patterns, two colours from a 16-colour palette, up to 3 letters
+- home and away kits: shirt, shorts and socks, each from the palette
+- opposition (Easy / Normal / Hard) and match length (3 / 5 / 8 min)
+
+A live preview shall show the crest and both kits. The new club shall start with:
+- a place in Division 5
+- 1,000 coins
+- 18 players: 2 goalkeepers, 6 defenders, 6 midfielders and 4 forwards
+- a level-1 stadium (2,000 seats)
+
+Parent: SYS-22, SYS-24 · Method: T · Case: VC-35
+
+**SWR-111 — Divisions and fixtures.** There shall be six divisions: Division 5, 4, 3, 2, 1 and the Elite Division. Each season the user's club plays the 7 other clubs of its division twice, once at home and once away, over 14 matchdays. Every club plays once on each matchday.
+Parent: SYS-22 · Method: T · Case: VC-36
+
+**SWR-112 — League table.** A win is worth 3 points and a draw 1. The table shall be ordered by points, then goal difference, then goals scored.
+Parent: SYS-22 · Method: T · Case: VC-36
+
+**SWR-113 — Promotion, relegation and prize money.**
+- The top two clubs are promoted, except from the Elite Division.
+- The bottom two are relegated, except from Division 5.
+- League prize money is (9 − position) × 120 × (1 + 0.5 × tier), where tier is 0 for Division 5 and 5 for the Elite Division.
+- The champions also receive 800 × (1 + 0.5 × tier).
+- The cup winners receive 1,500 × (1 + 0.5 × tier).
+
+Parent: SYS-22 · Method: T · Case: VC-37
+
+**SWR-114 — Cup.** Each season an 8-club knockout cup is played: quarter-finals, semi-finals and final, before matchdays 4, 8 and 12. The entrants are:
+- the user's club
+- two league rivals
+- five clubs from the divisions around it
+
+A drawn tie is settled by a penalty shoot-out. Once the user's club is out, the remaining rounds are simulated.
+Parent: SYS-22 · Method: T · Case: VC-36
+
+**SWR-115 — Playing or simulating a fixture.** The next fixture can be played in 3D or simulated.
+- A played fixture uses the user's formation, eleven and substitutes against the opponent's generated squad, at the home club's stadium.
+- Both played and simulated results are recorded in the same way.
+- Leaving a match from the pause menu does not record it, and the fixture stays next.
+
+Parent: SYS-22 · Method: T · Case: VC-38
+
+**SWR-116 — Match earnings.** After each match the club earns coins, multiplied by (1 + 0.35 × tier) and by 1.5 in the cup:
+
+| Item | Coins |
+| --- | --- |
+| Win / draw / defeat | 150 / 70 / 30 |
+| Each goal scored | 15 |
+| Gate receipts, home matches only | attendance × 0.025, with attendance 60–95% of capacity |
+
+Parent: SYS-22 · Method: T · Case: VC-39
+
+**SWR-117 — Saving.** The career shall be saved in the browser's local storage after every match and every change, and restored when Career is opened later. The user shall also be able to:
+- export the career as a JSON file
+- import such a file, refusing files that are not career saves
+- delete the career after confirming
+
+Parent: SYS-22 · Method: T · Case: VC-40
+
+### 2.11 Squad and transfers
+
+**SWR-120 — Players.** Each player shall have:
+- a first and last name, position (GK / DF / MF / FW), age, unique shirt number and potential
+- seven attributes from 15 to 99: pace (PAC), shooting (SHO), passing (PAS), dribbling (DRI), defending (DEF), stamina (STA) and goalkeeping (GK)
+- an overall rating, the position-weighted sum of attributes:
+
+| Position | Overall |
+| --- | --- |
+| GK | 0.86 GK + 0.07 PAS + 0.07 STA |
+| DF | 0.45 DEF + 0.2 STA + 0.2 PAC + 0.15 PAS |
+| MF | 0.35 PAS + 0.25 DRI + 0.12 DEF + 0.13 SHO + 0.15 PAC |
+| FW | 0.42 SHO + 0.25 PAC + 0.23 DRI + 0.1 PAS |
+
+Parent: SYS-23 · Method: T · Case: VC-41
+
+**SWR-121 — Formation and line-up.**
+- The user shall choose one of five formations: 4-4-2, 4-3-3, 4-2-3-1, 3-5-2 or 5-3-2.
+- The squad screen lists the starting eleven by slot (GK, LB, CB, …), five substitutes and the reserves.
+- Tapping two players swaps them; Auto-pick chooses the best eleven.
+- A player out of position counts 8 lower, or 35 lower when an outfield player and a goalkeeper swap. This is shown in red, and in matches his attributes are scaled by 0.9 (0.55 for the keeper swap).
+
+Parent: SYS-23 · Method: T · Case: VC-42
+
+**SWR-122 — Ratings in play.** Attributes shall change what players do in a match:
+
+| Attribute | Effect |
+| --- | --- |
+| Pace | Running speed |
+| Passing | Pass accuracy |
+| Shooting | Shot accuracy and power |
+| Defending against the carrier's dribbling | Tackle and steal success |
+| Goalkeeping | Save chance and diving reach |
+| Stamina | How fast stamina is used |
+
+The automated check compares high and low ratings and requires a clear difference in each effect.
+Parent: SYS-23 · Method: T · Case: VC-41
+
+**SWR-123 — Transfer market.**
+- After every match the market shall offer 19 new players: 16 near the division's level, priced by rating and age, and 3 cheap free agents aged 31–34.
+- Buying needs enough coins and a squad below 25.
+- Selling returns 60% of a player's value and needs a squad above 16.
+- Buy and Sell buttons are disabled when not allowed.
+
+Parent: SYS-23 · Method: T · Case: VC-43
+
+**SWR-124 — Development and ageing.**
+- After each match, a starter aged 27 or under who is below his potential has an 18% chance of raising one attribute by 1.
+- At the end of a season every player ages by a year. Players up to 23 improve by 1–4 (up to their potential); 24–28 change by −1 to +1; 29–31 lose 0–1; 32 and over lose 1–3.
+- A player aged 35 or over retires with 70% chance, keeping at least 16 players.
+- 17-year-old youth players are added until the squad has 18.
+
+Parent: SYS-23 · Method: T · Case: VC-44
+
+### 2.12 Club identity and stadium
+
+**SWR-130 — Identity in matches.**
+- In a career match the clubs' short names and crests appear on the scoreboard, and each team plays in its kit.
+- When the home and away shirts are too alike, the away side wears its away kit (or a white or black shirt if that also clashes).
+- The pitchside boards carry generic text, not team names.
+
+Parent: SYS-24 · Method: T · Case: VC-38
+
+**SWR-131 — Stadium.** The stadium has five levels:
+
+| Level | Seats | Cost to reach | Ground |
+| --- | --- | --- | --- |
+| 1 | 2,000 | — | Main stand only |
+| 2 | 6,000 | 1,200 | Adds both end stands |
+| 3 | 14,000 | 3,500 | Adds the main roof |
+| 4 | 28,000 | 9,000 | Adds the end roofs |
+| 5 | 48,000 | 20,000 | Brighter floodlights |
+
+The crowd's density and noise grow with the level. Matches use the home club's stadium.
+Parent: SYS-24 · Method: T · Cases: VC-45, VC-38
+
+### 2.13 Match depth
+
+**SWR-140 — Through ball.** I (touch: THRU) shall play a ground pass into the space 5–12 ahead of the team-mate who best fits the held direction, never deeper than 7 from the goal line. The receiver runs onto it with the receive assist. Computer teams shall also play through balls to forwards on the last defender's shoulder: at least 1 per match on average across simulated matches.
+Parent: SYS-13 · Method: T, A · Case: VC-46
+
+**SWR-141 — Skill move.** O (touch: SKILL) with the ball shall start a 0.4 s turn that carries the player and ball about 3 sideways and forwards. During the move:
+- defenders cannot take the ball by contact
+- standing tackles succeed 65% less often
+- half of slides miss
+
+The move costs 0.03 stamina and has a 1.3 s cooldown. Computer dribblers under pressure also use it.
+Parent: SYS-13 · Method: T, A · Case: VC-47
+
+**SWR-142 — Stamina.**
+- Stamina (0–1) falls while a player runs, faster when sprinting and faster for players with low STA. It recovers while he walks or stands, and rises by 0.15 at half time.
+- The rates scale with match length, so a 3-minute and an 8-minute match tire players equally.
+- Below 0.5, speed falls (to 82% at 0) and passing and shooting become less accurate.
+- Across simulated matches, average outfield stamina at full time shall be between 0.4 and 0.8.
+
+Parent: SYS-25 · Method: T, A · Case: VC-48
+
+**SWR-143 — Substitutions.**
+- The pause menu shall offer Substitutions when the user plays: pick a player on the pitch, then a substitute.
+- Up to 5 substitutions; the new player has full stamina and no bookings, and the change is announced.
+- Computer teams make up to 3, from the 55th minute, at stoppages, replacing players whose stamina is below 0.56.
+
+Parent: SYS-25 · Method: T, A · Case: VC-49
+
+**SWR-144 — Name tag.** Above the controlled player the software shall show his shirt number, his surname and a stamina bar coloured green, amber or red. It shall be hidden in Watch mode.
+Parent: SYS-25 · Method: T · Case: VC-50
+
+### 2.14 Performance
 
 **SWR-100 — Simulation cost.** One simulation step (1/60 s of match time, all 22 players and the ball) shall take no more than 2 ms of CPU time on average.
 Parent: SYS-21 · Method: T · Case: VC-30

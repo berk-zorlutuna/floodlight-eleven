@@ -25,18 +25,18 @@ const SEED_SCRIPT = `(()=>{let a=${SEED}>>>0;Math.random=function(){a|=0;a=a+0x6
 
 // helpers installed in the page after load (window.T)
 const HELPERS = `window.T=(()=>{const fe=window.__fe;fe.hold=true;const T={tick:0,ev:[]};
-fe.onEvent=(k,d)=>T.ev.push({k,p:d.p,q:d.q,lob:d.lob,tick:T.tick});
+fe.onEvent=(k,d)=>T.ev.push({k,p:d.p,q:d.q,lob:d.lob,through:d.through,tick:T.tick});
 T.step=n=>{for(let i=0;i<n;i++){fe.step(1);T.tick++;}};
 T.start=(side=-1,len=300,diff=1)=>{fe.toMenu();const c=(o,v)=>document.querySelector('[data-opt='+o+'] [data-v="'+v+'"]').click();c('side',side);c('len',len);c('diff',diff);document.querySelector('#start').click();T.ev.length=0;};
 T.toPlay=(max=3000)=>{let n=0;while(fe.state!=='play'&&n++<max)T.step(1);return fe.state==='play';};
 T.until=(fn,max=600)=>{let n=0;while(!fn()&&n++<max)T.step(1);return !!fn();};
 T.park=(keep=[])=>{let i=0;for(const p of fe.all){if(keep.includes(p))continue;const s=i%2?1:-1;p.x=s*(10+(i%10)*3.5);p.z=(i<11?1:-1)*(23+i%5);p.vx=p.vz=p.dvx=p.dvz=0;p.receiving=0;i++;}};
-T.reset=()=>{for(const p of fe.all){p.stun=0;p.cool=0;p.slideT=0;p.slideCD=0;p.diveT=0;p.diveCD=0;p.receiving=0;p.tackleCD=0;p.vx=p.vz=p.dvx=p.dvz=0;}};
+T.reset=()=>{for(const p of fe.all){p.stun=0;p.cool=0;p.slideT=0;p.slideCD=0;p.skillT=0;p.skillCD=0;p.sta=1;p.diveT=0;p.diveCD=0;p.receiving=0;p.tackleCD=0;p.vx=p.vz=p.dvx=p.dvz=0;}};
 T.key=(code,down=true)=>window.dispatchEvent(new KeyboardEvent(down?'keydown':'keyup',{code}));
 T.press=code=>{T.key(code,true);T.key(code,false);};
 T.banner=()=>document.querySelector('#banner').textContent;
 T.give=(p,decide=10)=>{const b=fe.ball;b.owner=p;b.lock=null;b.gkick=false;b.inNet=false;b.x=p.x+Math.sin(p.fa)*0.5;b.z=p.z+Math.cos(p.fa)*0.5;b.y=0.17;b.vx=b.vy=b.vz=0;b.lastTouch=p.team;p.decideT=decide;};
-T.loose=o=>Object.assign(fe.ball,{owner:null,lock:null,inNet:false,gkick:false,vx:0,vy:0,vz:0,y:0.17},o);
+T.loose=o=>Object.assign(fe.ball,{owner:null,lock:null,inNet:false,gkick:false,vx:0,vy:0,vz:0,y:0.17,kickId:fe.ball.kickId+1,fresh:0},o);
 T.face=(p,dx,dz)=>{p.fa=Math.atan2(dx,dz);};
 return T;})();`;
 
@@ -55,7 +55,7 @@ async function newPage(opts = {}) {
   await pg.route(/fonts\.(googleapis|gstatic)\.com/, r => r.abort());
   await pg.goto('file://' + GAME);
   await pg.waitForFunction(() => window.__fe && window.THREE);
-  await pg.addScriptTag({ content: HELPERS });
+  await pg.addScriptTag({ content: HELPERS + CAREER_HELPER });
   return pg;
 }
 
@@ -351,7 +351,7 @@ function moreCases() {
         return o; });
       await pg.screenshot({ path: path.join(OUT_DIR, 'touch-landscape.png') }).catch(() => {});
       await pg.context().close();
-      const ok = r.coarse && r.touch && !r.keys && !r.radar && r.buttons.join() === 'SWITCH,LOB,SPRINT,PASS,SHOOT' && r.defending === 'SLIDE' && r.attacking === 'SHOOT' && r.tapPass;
+      const ok = r.coarse && r.touch && !r.keys && !r.radar && r.buttons.join() === 'SWITCH,LOB,SPRINT,SKILL,PASS,SHOOT,THRU' && r.defending === 'SLIDE' && r.attacking === 'SHOOT' && r.tapPass;
       return { pass: ok, evidence: `Emulated phone 844 × 390 with touch (coarse pointer ${r.coarse}). Touch controls shown ${r.touch}, keyboard hints shown ${r.keys}, mini-map shown ${r.radar}. Buttons: ${r.buttons.join(', ')}. Shoot button reads "${r.defending}" when defending, "${r.attacking}" in possession. Tapping PASS passed the ball: ${r.tapPass}. Screenshot: docs/verification/touch-landscape.png.` };
     } },
     { id: 'VC-26', title: 'Heads-up display', reqs: ['SWR-092'], method: 'T', async run(pg) {
@@ -403,7 +403,9 @@ function moreCases() {
     } },
     { id: 'VC-32', title: 'Simulated computer-vs-computer matches', reqs: ['SWR-032', 'SWR-061', 'SWR-073', 'SWR-082'], method: 'A', async run(pg) {
       const N = 10, tot = {};
-      for (let m = 0; m < N; m++) { const st = await pg.evaluate(() => matchStats(false)); for (const k in st) tot[k] = (tot[k] || 0) + st[k]; }
+      let maxTeam = 0, earliest = 99;
+      for (let m = 0; m < N; m++) { const st = await pg.evaluate(() => matchStats(false)); for (const k in st) tot[k] = (tot[k] || 0) + st[k]; maxTeam = Math.max(maxTeam, st.subsMaxTeam); earliest = Math.min(earliest, st.subsEarliest); }
+      aiStats = { N, through: tot.through, skills: tot.skills, subs: tot.subs, subsMaxTeam: maxTeam, subsEarliest: earliest, ftSta: tot.ftSta };
       const conv = tot.goals / tot.shots, gr = tot.recv_gr / tot.pass_gr, lob = tot.recv_lob / tot.pass_lob, slides = tot.slides / N, offs = tot.offs / N;
       const ok = conv >= 0.10 && conv <= 0.30 && gr >= 0.75 && lob >= 0.65 && slides >= 1 && offs <= 2;
       return { pass: ok, stats: tot, evidence: `${N} matches of 5 minutes, both teams computer-controlled. Shots ${tot.shots}, goals ${tot.goals}: conversion ${pct(tot.goals, tot.shots)} (${(tot.goals / N).toFixed(1)} goals per match). Ground passes received ${tot.recv_gr}/${tot.pass_gr} (${pct(tot.recv_gr, tot.pass_gr)}). Lofted passes received ${tot.recv_lob}/${tot.pass_lob} (${pct(tot.recv_lob, tot.pass_lob)}). Per match: sliding tackles ${slides.toFixed(1)}, offsides ${offs.toFixed(1)}, fouls ${(tot.fouls / N).toFixed(1)}, yellow cards ${(tot.yel / N).toFixed(1)}, red cards ${(tot.reds / N).toFixed(2)}.` };
@@ -417,17 +419,260 @@ function moreCases() {
   ];
 }
 
-const STATS_HELPER = `window.matchStats=(bot)=>{const fe=window.__fe;T.start(bot?0:-1,300);const st={shots:0,goals:0,pass_gr:0,recv_gr:0,pass_lob:0,recv_lob:0,upass_gr:0,urecv_gr:0,ulost_near:0,slides:0};
+const STATS_HELPER = `window.matchStats=(bot)=>{const fe=window.__fe;T.start(bot?0:-1,300);const st={shots:0,goals:0,pass_gr:0,recv_gr:0,pass_lob:0,recv_lob:0,upass_gr:0,urecv_gr:0,ulost_near:0,slides:0,through:0,skills:0,subs:0,subsEarliest:99};
   let pend=null,shot=null;fe.onEvent=(k,d)=>{if(k==='pass'){const user=bot&&d.p===fe.ctrl;pend={q:d.q,t:d.p.team,lob:d.lob,user};if(user){if(!d.lob)st.upass_gr++;}else st[d.lob?'pass_lob':'pass_gr']++;}
-    if(k==='shot'&&!(bot&&d.p===fe.ctrl)){st.shots++;shot={t:d.p.team};}if(k==='slide'&&!(bot&&d.p===fe.ctrl))st.slides++;};
+    if(k==='shot'&&!(bot&&d.p===fe.ctrl)){st.shots++;shot={t:d.p.team};}if(k==='slide'&&!(bot&&d.p===fe.ctrl))st.slides++;if(k==='pass'&&d.through&&!(bot&&d.p===fe.ctrl))st.through++;if(k==='skill'&&!(bot&&d.p===fe.ctrl))st.skills++;if(k==='sub'){st.subs++;st.subsEarliest=Math.min(st.subsEarliest,fe.gameMin());}};
   const key=T.key;let owner=null,state=fe.state,botT=0,held=null,holdEnd=0,t=0;
   while(fe.state!=='fulltime'&&t<60*600){fe.step(1);t++;const o=fe.ball.owner;
     if(o!==owner){owner=o;if(o&&pend){const ok=o===pend.q;if(pend.user){if(!pend.lob){if(ok)st.urecv_gr++;else if(o.team!==pend.t&&Math.hypot(pend.q.x-fe.ball.x,pend.q.z-fe.ball.z)<1.5)st.ulost_near++;}}else if(ok)st[pend.lob?'recv_lob':'recv_gr']++;pend=null;}if(o&&shot)shot=null;}
     if(fe.state!==state){state=fe.state;if(state!=='play')pend=null;if(shot&&state==='goal'&&fe.teams.find(x=>x.dir===Math.sign(fe.ball.x))===shot.t)st.goals++;shot=null;}
     if(bot){const c=fe.ctrl,dk=fe.teams[0].dir>0?'KeyD':'KeyA';if(held&&t>=holdEnd){key(held,false);held=null;}
       if(c&&fe.ball.owner===c&&fe.state==='play'&&!fe.ball.lock){botT++;if(!held){key(dk,true);held=dk;holdEnd=t+1e9;}if(botT>40+Math.random()*60){T.press('KeyJ');botT=0;holdEnd=t+30;}}else botT=0;}}
-  if(held)key(held,false);fe.onEvent=(k,d)=>T.ev.push({k,p:d.p,q:d.q,lob:d.lob,tick:T.tick});
+  if(held)key(held,false);fe.onEvent=(k,d)=>T.ev.push({k,p:d.p,q:d.q,lob:d.lob,through:d.through,tick:T.tick});
+  const out=fe.teams.flatMap(t=>t.players.filter(p=>p.role!=='GK'));st.ftSta=out.reduce((a,p)=>a+p.sta,0)/out.length;st.subsMaxTeam=Math.max(...fe.teams.map(t=>t.subs));
   st.offs=fe.teams[0].offs+fe.teams[1].offs;st.fouls=fe.teams[0].fouls+fe.teams[1].fouls;st.yel=fe.teams[0].yel+fe.teams[1].yel;st.reds=fe.teams[0].reds+fe.teams[1].reds;return st;};`;
+
+
+// ---------------------------------------------------------------- career, squad, identity and new gameplay
+let aiStats = null;
+const CAREER_HELPER = `window.C={
+  act(a,extra){const sel='[data-act="'+a+'"]'+(extra||'');const b=document.querySelector(sel);if(!b)throw new Error('no element '+sel);b.click();return b;},
+  has(a,extra){return !!document.querySelector('[data-act="'+a+'"]'+(extra||''));},
+  setIn(k,v){const i=document.querySelector('[data-in="'+k+'"]');i.value=v;i.dispatchEvent(new Event('input',{bubbles:true}));},
+  reset(){const fe=window.__fe;fe.toMenu();try{localStorage.clear();}catch(e){}fe.career=null;fe.cv.draft=null;fe.cv.result=null;fe.cv.season=null;fe.cv.msg='';fe.cv.tab='home';},
+  found(name){C.reset();document.querySelector('#careerBtn').click();if(name)C.setIn('name',name);C.act('create');return window.__fe.career;},
+  ack(){if(C.has('ack-result')){C.act('ack-result');return true;}if(C.has('ack-season')){C.act('ack-season');return true;}return false;},
+  sim(n){for(let i=0;i<n;i++){C.ack();C.act('sim');}C.ack();},
+  records(rank){const fe=window.__fe,L=fe.career.league.teams;const order=L.map(t=>t.id).filter(id=>id!=='you');order.splice(rank-1,0,'you');
+    order.forEach((id,i)=>{const t=L.find(x=>x.id===id);Object.assign(t,{P:14,W:14-i,D:0,L:i,GF:20-i,GA:5+i,form:[]});});}
+};`;
+
+function careerCases(pg) {
+  const ev = (fn, arg) => pg.evaluate(fn, arg);
+  return [
+    { id: 'VC-35', title: 'Founding a club', reqs: ['SWR-110'], method: 'T', async run() {
+      const r = await ev(() => { const fe = window.__fe; C.reset(); document.querySelector('#careerBtn').click(); const createShown = !!document.querySelector('[data-act="create"]');
+        C.setIn('name', 'Test Rovers Football Club Limited'); C.setIn('short', 'tr1x'); C.setIn('crest.txt', 'trx9');
+        C.act('crest', '[data-k="shape"][data-v="diamond"]'); C.act('crest', '[data-k="pattern"][data-v="hoops"]');
+        C.act('col', '[data-path="crest.c1"][data-v="#7b2cbf"]'); C.act('col', '[data-path="kit.home.shirt"][data-v="#f2c94c"]'); C.act('col', '[data-path="kit.away.shorts"][data-v="#111827"]');
+        C.act('opt', '[data-k="diff"][data-v="2"]'); C.act('opt', '[data-k="len"][data-v="180"]'); const prev = document.querySelector('#crestPrev').innerHTML;
+        C.act('create'); const c = fe.career, n = p => c.squad.filter(d => d.pos === p).length;
+        return { createShown, name: c.club.name, short: c.club.short, crest: c.club.crest, home: c.club.kit.home.shirt, awayShorts: c.club.kit.away.shorts, diff: c.diff, len: c.len, tier: c.tier, coins: c.coins, season: c.season, comp: [n('GK'), n('DF'), n('MF'), n('FW')].join('-'), squad: c.squad.length, stad: c.club.stadium.level, lineup: c.lineup.length, hub: !!document.querySelector('.hub-head'), prevTxt: prev.includes('>TRX<') }; });
+      await pg.screenshot({ path: path.join(OUT_DIR, 'career-hub.png') }).catch(() => {});
+      const ok = r.createShown && r.name === 'Test Rovers Football C' && r.short === 'TR1' && r.crest.txt === 'TRX' && r.crest.shape === 'diamond' && r.crest.pattern === 'hoops' && r.crest.c1 === '#7b2cbf' && r.home === '#f2c94c' && r.awayShorts === '#111827'
+        && r.diff === 2 && r.len === 180 && r.tier === 0 && r.coins === 1000 && r.season === 1 && r.squad === 18 && r.comp === '2-6-6-4' && r.stad === 1 && r.lineup === 18 && r.hub && r.prevTxt;
+      return { pass: ok, evidence: `Create screen shown ${r.createShown}. Typed name cut to 22 characters: "${r.name}"; short name "tr1x" → "${r.short}"; crest letters "trx9" → "${r.crest.txt}" (preview shows them ${r.prevTxt}). Crest ${r.crest.shape}/${r.crest.pattern}/${r.crest.c1}; home shirt ${r.home}; away shorts ${r.awayShorts}; opposition ${r.diff}, match ${r.len} s. New club: tier ${r.tier} (Division 5), ${r.coins} coins, season ${r.season}, ${r.squad} players (GK-DF-MF-FW ${r.comp}), stadium level ${r.stad}, lineup of ${r.lineup}; hub shown ${r.hub}.` };
+    } },
+    { id: 'VC-36', title: 'Season structure, league table and cup', reqs: ['SWR-111', 'SWR-112', 'SWR-114'], method: 'T', async run() {
+      const r = await ev(() => { const fe = window.__fe, c = C.found('Season Test'), L = c.league;
+        const mdOk = L.fixtures.length === 14 && L.fixtures.every(md => md.length === 4 && new Set(md.flat()).size === 8);
+        const pairs = new Set(L.fixtures.flat().map(p => p.join('>'))); const evts = c.events.map(e => e.type === 'cup' ? 'C' + e.round : 'L').join('');
+        while (fe.career.ev < 16) { C.ack(); C.act('sim'); } C.ack();
+        const t = fe.careerApi.table(), tl = fe.career.league.teams; const pts = x => 3 * x.W + x.D;
+        const tableOk = tl.every(x => x.P === 13 && x.W + x.D + x.L === 13) && tl.reduce((s, x) => s + x.GF, 0) === tl.reduce((s, x) => s + x.GA, 0)
+          && t.every((x, i) => i === 0 || pts(t[i - 1]) > pts(x) || (pts(t[i - 1]) === pts(x) && ((t[i - 1].GF - t[i - 1].GA) > (x.GF - x.GA) || ((t[i - 1].GF - t[i - 1].GA) === (x.GF - x.GA) && t[i - 1].GF >= x.GF))));
+        const cup = fe.career.cup, res = cup.res.flat(); const cupOk = cup.res.length === 3 && cup.res[0].length === 4 && cup.res[1].length === 2 && cup.res[2].length === 1 && !!cup.winner && cup.winner === cup.res[2][0].w
+          && res.every(x => x.hg !== x.ag ? !x.pens && x.w === (x.hg > x.ag ? x.h : x.a) : x.pens && x.pens[0] !== x.pens[1] && x.w === (x.pens[0] > x.pens[1] ? x.h : x.a));
+        const drawn = res.filter(x => x.hg === x.ag).length;
+        C.act('sim'); const shown = C.has('ack-result') || C.has('ack-season'); C.ack(); const seasonShown = C.has('ack-season'); C.ack();
+        return { mdOk, pairs: pairs.size, evts, tableOk, cupOk, drawn, shown, seasonShown, hist: fe.career.history.length, season: fe.career.season }; });
+      const ok = r.mdOk && r.pairs === 56 && r.evts === 'LLLC0LLLLC1LLLLC2LLL' && r.tableOk && r.cupOk && r.seasonShown && r.hist === 1 && r.season === 2;
+      return { pass: ok, evidence: `14 matchdays of 4 matches with all 8 clubs each time: ${r.mdOk}; ${r.pairs} distinct home-and-away pairings (8 × 7 = 56). Event order ${r.evts} (L league, C0–C2 cup rounds). After 13 simulated matchdays: every club has 13 played with W+D+L = 13, goals for = goals against overall, table sorted by points, goal difference, goals: ${r.tableOk}. Cup: quarter-finals 4, semi-finals 2, final 1, winner set, every winner consistent with score or penalties: ${r.cupOk} (${r.drawn} ties went to penalties). Final matchday led to the end-of-season screen ${r.seasonShown}; history has ${r.hist} season; now season ${r.season}.` };
+    } },
+    { id: 'VC-37', title: 'Promotion, relegation and prize money', reqs: ['SWR-113'], method: 'T', async run() {
+      const r = await ev(() => { const fe = window.__fe; C.found('Ladder FC'); const out = [];
+        for (const [tier, rank] of [[0, 1], [0, 2], [0, 3], [0, 8], [3, 7], [3, 8], [5, 1], [5, 8], [2, 2]]) { const c = fe.career; c.tier = tier; c.cup.winner = null; C.records(rank); const c0 = c.coins;
+          fe.careerApi.seasonEnd(); const s = fe.cv.season; fe.cv.season = null; out.push({ tier, rank, newTier: fe.career.tier, move: s.move, prize: s.prize, gained: fe.career.coins - c0, pos: s.pos }); }
+        return out; });
+      const exp = (t, p) => ({ move: p <= 2 && t < 5 ? 1 : p >= 7 && t > 0 ? -1 : 0, prize: Math.round((9 - p) * 120 * (1 + t * 0.5)) + (p === 1 ? Math.round(800 * (1 + t * 0.5)) : 0) });
+      const ok = r.every(o => { const e = exp(o.tier, o.rank); return o.pos === o.rank && o.move === e.move && o.newTier === o.tier + e.move && o.prize === e.prize && o.gained === e.prize; });
+      return { pass: ok, evidence: r.map(o => `tier ${o.tier}, finished ${o.pos}: move ${o.move > 0 ? '+1' : o.move}, now tier ${o.newTier}, prize ${o.prize} (coins +${o.gained})`).join('; ') + '. Tier 0 is Division 5, tier 5 the Elite Division.' };
+    } },
+    { id: 'VC-38', title: 'Playing a career fixture in 3D', reqs: ['SWR-115', 'SWR-130', 'SWR-131'], method: 'T', async run() {
+      const r = await ev(() => { const fe = window.__fe, c = C.found('Pitch Test'), f = fe.careerApi.nextFixture(); const youHome = f.h === 'you', opp = c.league.teams.find(t => t.id === (youHome ? f.a : f.h));
+        if (youHome) opp.kit.home.shirt = c.club.kit.home.shirt; else c.club.kit.home.shirt = opp.kit.home.shirt; // force a colour clash
+        const homeStadium = youHome ? c.club.stadium.level : opp.stadium.level; C.act('play');
+        const me = fe.humanTeam, them = me.opp, xi = c.lineup.slice(0, 11).map(id => c.squad.find(d => d.id === id)), names = me.roster.map(p => p.data.id);
+        const o = { started: fe.state === 'kickoff', humanName: me.name, club: c.club.name, xiMatch: xi.every((d, i) => names[i] === d.id), stad: fe.stadiumLevel, homeStadium, crests: document.querySelector('#hcr svg') && document.querySelector('#acr svg') ? 2 : 0,
+          clashGap: Math.round(fe.model ? 0 : 0), homeShirt: fe.teams[0].def.shirt, awayShirt: fe.teams[1].def.shirt, awayUsedAwayKit: fe.teams[1].def.shirt !== parseInt((youHome ? opp : c.club).kit.home.shirt.slice(1), 16), meIndex: fe.teams.indexOf(me), youHome };
+        let n = 0; while (fe.state !== 'fulltime' && n++ < 40000) fe.step(1); const score = [fe.teams[0].score, fe.teams[1].score]; const coins0 = fe.career.coins;
+        document.querySelector('#ftCont').click(); const you = fe.career.league.teams.find(t => t.id === 'you'), res = fe.cv.result;
+        o.recorded = you.P === 1 && you.GF === score[youHome ? 0 : 1] && you.GA === score[youHome ? 1 : 0]; o.result = !!res && res.played && res.hg === score[0] && res.ag === score[1]; o.coins = fe.career.coins - coins0 === res.total; o.overlay = !document.querySelector('#career').hidden; C.ack();
+        // leaving a match early does not record it
+        const ev0 = fe.career.ev; C.act('play'); T.toPlay(); T.press('KeyP'); const quitLabel = document.querySelector('#quit').textContent; document.querySelector('#quit').click();
+        o.leave = { label: quitLabel, ev: fe.career.ev === ev0, P: fe.career.league.teams.find(t => t.id === 'you').P, overlay: !document.querySelector('#career').hidden, menu: document.querySelector('#menu').hidden };
+        return o; });
+      const ok = r.started && r.humanName === r.club && r.xiMatch && r.stad === r.homeStadium && r.crests === 2 && r.homeShirt !== r.awayShirt && r.awayUsedAwayKit && r.recorded && r.result && r.coins && r.overlay && r.leave.ev && r.leave.P === 1 && r.leave.overlay && r.leave.menu;
+      return { pass: ok, evidence: `PLAY MATCH started the 3D match ${r.started} with the user controlling "${r.humanName}" (${r.youHome ? 'home' : 'away'}); the user's starting eleven is on the pitch in lineup order ${r.xiMatch}; stadium level ${r.stad} = home club's level ${r.homeStadium}; crests on the scoreboard ${r.crests}. With home shirts forced to clash, the away side wore its away kit ${r.awayUsedAwayKit} (shirts #${r.homeShirt.toString(16)} v #${r.awayShirt.toString(16)}). After full time and CONTINUE: result recorded in the table ${r.recorded}, result screen matches the score ${r.result}, coins added equal the shown total ${r.coins}, back in the career screens ${r.overlay}. Leaving the next match from the pause menu ("${r.leave.label}"): fixture not consumed ${r.leave.ev}, still ${r.leave.P} played, career screens shown ${r.leave.overlay}.` };
+    } },
+    { id: 'VC-39', title: 'Match earnings', reqs: ['SWR-116'], method: 'T', async run() {
+      const r = await ev(() => { const fe = window.__fe, A = fe.careerApi; C.found('Coins FC'); const out = [];
+        for (const want of ['W', 'D', 'L']) { let f = A.nextFixture(); while (f.e.type !== 'league') { C.act('sim'); C.ack(); f = A.nextFixture(); }
+          const yh = f.h === 'you', [y, o] = want === 'W' ? [3, 1] : want === 'D' ? [2, 2] : [0, 1], hg = yh ? y : o, ag = yh ? o : y, c0 = fe.career.coins, tier = fe.career.tier, cap = fe.model.STADIUM_CAP[fe.career.club.stadium.level];
+          A.careerResult(hg, ag, false); const res = fe.cv.result; C.ack(); out.push({ want, yh, y, tier, cap, items: res.items, total: res.total, gained: fe.career.coins - c0 }); }
+        return out; });
+      const ok = r.every(o => { const m = 1 + o.tier * 0.35, base = { W: 150, D: 70, L: 30 }[o.want]; const it = o.items; const gate = it.find(x => /Gate/.test(x[0]));
+        return it[0][1] === Math.round(base * m) && it[1][1] === Math.round(o.y * 15 * m) && (o.yh ? gate && gate[1] >= Math.round(o.cap * 0.6 * 0.025) - 1 && gate[1] <= Math.round(o.cap * 0.95 * 0.025) + 1 : !gate) && o.total === it.reduce((s, x) => s + x[1], 0) && o.gained === o.total; });
+      return { pass: ok, evidence: r.map(o => `${o.want} (${o.yh ? 'home' : 'away'}, ${o.y} scored): ${o.items.map(x => `${x[0]} +${x[1]}`).join(', ')}; total ${o.total}, coins +${o.gained}`).join('. ') + '.' };
+    } },
+    { id: 'VC-40', title: 'Saving, reloading, export, import, delete', reqs: ['SWR-117'], method: 'T', async run() {
+      const p2 = await newPage(); p2.on('dialog', d => d.accept());
+      const before = await p2.evaluate(() => { const fe = window.__fe; C.found('Saved FC'); C.sim(2); fe.career.coins += 5000; C.act('tab', '[data-v="transfers"]'); C.act('buy', '[data-i="0"]');
+        return { name: fe.career.club.name, coins: fe.career.coins, ev: fe.career.ev, squad: fe.career.squad.length, P: fe.career.league.teams.find(t => t.id === 'you').P }; });
+      await p2.reload(); await p2.waitForFunction(() => window.__fe && window.THREE); await p2.addScriptTag({ content: HELPERS + CAREER_HELPER });
+      const after = await p2.evaluate(() => { document.querySelector('#careerBtn').click(); const fe = window.__fe; return { name: fe.career && fe.career.club.name, coins: fe.career && fe.career.coins, ev: fe.career && fe.career.ev, squad: fe.career && fe.career.squad.length, P: fe.career && fe.career.league.teams.find(t => t.id === 'you').P, hub: document.querySelector('#hubName') && document.querySelector('#hubName').textContent }; });
+      await p2.evaluate(() => C.act('tab', '[data-v="club"]'));
+      const [dl] = await Promise.all([p2.waitForEvent('download'), p2.evaluate(() => C.act('export'))]);
+      const file = path.join(OUT_DIR, 'tmp-save.json'); await dl.saveAs(file); const exported = JSON.parse(fs.readFileSync(file, 'utf8'));
+      const del = await p2.evaluate(() => { C.act('delete'); let stored = 'x'; try { stored = localStorage.getItem('floodlight-eleven-career-v1'); } catch (e) {} return { career: window.__fe.career, stored, create: !!document.querySelector('[data-act="create"]') }; });
+      await p2.setInputFiles('#importFile', file); await p2.waitForFunction(() => window.__fe.career);
+      const imp = await p2.evaluate(() => ({ name: window.__fe.career.club.name, coins: window.__fe.career.coins, msg: document.querySelector('.msg') && document.querySelector('.msg').textContent }));
+      const bad = path.join(OUT_DIR, 'tmp-bad.json'); fs.writeFileSync(bad, '{"hello":1}'); await p2.setInputFiles('#importFile', bad); await p2.waitForTimeout(300);
+      const badRes = await p2.evaluate(() => ({ name: window.__fe.career.club.name, msg: document.querySelector('.msg') && document.querySelector('.msg').textContent }));
+      fs.unlinkSync(file); fs.unlinkSync(bad); await p2.context().close();
+      const same = ['name', 'coins', 'ev', 'squad', 'P'].every(k => before[k] === after[k]);
+      const ok = same && after.hub === 'Saved FC' && exported.v === 1 && exported.club.name === 'Saved FC' && exported.coins === before.coins && del.career === null && del.stored === null && del.create && imp.name === 'Saved FC' && imp.coins === before.coins && /imported/.test(imp.msg) && badRes.name === 'Saved FC' && /not a Floodlight Eleven career save/.test(badRes.msg);
+      return { pass: ok, evidence: `Before reload: ${JSON.stringify(before)}. After reloading the page and opening Career: ${JSON.stringify(after)} (identical ${same}). Export downloaded "${dl.suggestedFilename()}" with club "${exported.club.name}" and ${exported.coins} coins. Delete (confirmed): career cleared ${del.career === null}, storage entry removed ${del.stored === null}, create screen shown ${del.create}. Importing the exported file restored "${imp.name}" with ${imp.coins} coins ("${imp.msg}"). Importing an unrelated JSON file was refused ("${badRes.msg}") and kept the career.` };
+    } },
+    { id: 'VC-41', title: 'Player model and ratings in play', reqs: ['SWR-120', 'SWR-122'], method: 'T', async run() {
+      const r = await ev(() => { const fe = window.__fe, M = fe.model; C.found('Model FC'); const sq = fe.career.squad;
+        const W = { GK: { gk: 0.86, pas: 0.07, phy: 0.07 }, DF: { def: 0.45, phy: 0.2, pac: 0.2, pas: 0.15 }, MF: { pas: 0.35, dri: 0.25, def: 0.12, sho: 0.13, pac: 0.15 }, FW: { sho: 0.42, pac: 0.25, dri: 0.23, pas: 0.1 } };
+        const model = sq.every(d => ['pac', 'sho', 'pas', 'dri', 'def', 'phy', 'gk'].every(k => d.a[k] >= 15 && d.a[k] <= 99) && d.ovr === Math.round(Object.entries(W[d.pos]).reduce((s, [k, w]) => s + d.a[k] * w, 0)) && d.pot >= d.ovr && d.first && d.last && d.num > 0 && d.age >= 17);
+        const nums = new Set(sq.map(d => d.num)).size === sq.length;
+        T.start(0); T.toPlay(); const A = fe.teams[0], B = fe.teams[1], d = A.dir, p = A.players[6];
+        const sp = v => { p.st.pac = v; return M.runSpeed(p); }; const speed = { fast: sp(0.9), slow: sp(0.5) };
+        // passing accuracy: lateral miss of 120 passes over 25 m
+        const passErr = v => { let s = 0; for (let i = 0; i < 120; i++) { T.toPlay(); T.reset(); const P = A.players[6], R = A.players[9]; T.park([P, R]); P.x = 0; P.z = 0; T.face(P, d, 0); R.x = d * 25; R.z = 0; P.st.pas = v; T.give(P); fe.passTo(P, R, false); const b = fe.ball, m = Math.hypot(b.vx, b.vz); s += Math.abs(b.vz / m) * 25; } return s / 120; };
+        const pass = { good: passErr(0.95), poor: passErr(0.4) };
+        // shooting: share of 150 shots from 20 m that would cross the line inside the posts
+        const onTarget = v => { let n = 0; for (let i = 0; i < 150; i++) { T.toPlay(); T.reset(); const P = A.players[9]; T.park([P, B.players[0]]); P.x = d * 32.5; P.z = 0; T.face(P, d, 0); P.st.sho = v; T.give(P); M.aiShoot(P, 20); const b = fe.ball, t = (d * 52.5 - b.x) / b.vx, z = b.z + b.vz * t, y = b.y + b.vy * t - 4.905 * t * t; if (Math.abs(z) < 3.66 && y < 2.44) n++; } return n / 150; };
+        const shot = { good: onTarget(0.95), poor: onTarget(0.4) };
+        // tackling: J from the front, tackler's defending against the carrier's dribbling
+        const tackleWin = v => { let n = 0, w = 0; for (let i = 0; i < 60; i++) { T.toPlay(); T.reset(); const c = B.players[6], me = A.players[6]; T.park([c, me]); c.x = 0; c.z = 0; T.face(c, 1, 0); c.stun = 5; T.give(c); me.z = 0; me.x = 1.25; T.face(me, -1, 0); me.st.def = v; c.st.dri = 0.7; T.step(1); if (fe.ctrl !== me) continue; T.press('KeyJ'); T.step(2); n++; if (fe.ball.owner === me) w++; } return w / Math.max(1, n); };
+        const tackle = { good: tackleWin(0.95), poor: tackleWin(0.35) };
+        // goalkeeping: keeper's save share against 60 shots at him
+        const saves = v => { let s = 0; for (let i = 0; i < 60; i++) { T.toPlay(); T.reset(); const gk = B.players[0]; T.park([gk]); gk.x = d * 50.5; gk.z = 0; gk.st.gk = v; T.step(10); const zt = [-1.5, 1.5, -2.5, 2.5][i % 4]; const sx = d * 34.5, dx = d * 52.5 - sx, dd = Math.hypot(dx, zt), Tt = dd / 24; T.loose({ x: sx, z: 0, y: 1, vx: dx / dd * 24, vz: zt / dd * 24, vy: 0.5 * 9.81 * Tt, lastTouch: A }); T.until(() => fe.ball.owner || fe.ball.lastTouch === B || fe.state !== 'play', 120); if (fe.ball.owner === gk || fe.ball.lastTouch === B) s++; } return s / 60; };
+        const keep = { good: saves(0.95), poor: saves(0.4) };
+        // stamina attribute: drain over 5 s of sprinting
+        const drain = v => { T.toPlay(); T.reset(); const me = A.players[6]; T.park([me]); me.x = -20; me.z = 0; T.give(me); T.step(1); me.st.phy = v; me.sta = 1; T.key('KeyD', true); T.key('ShiftLeft', true); T.step(300); T.key('KeyD', false); T.key('ShiftLeft', false); return 1 - me.sta; };
+        const sta = { good: drain(0.95), poor: drain(0.4) };
+        return { model, nums, speed, pass, shot, tackle, keep, sta }; });
+      const ok = r.model && r.nums && r.speed.fast > r.speed.slow * 1.1 && r.pass.poor > r.pass.good * 2 && r.shot.good > r.shot.poor + 0.1 && r.tackle.good > r.tackle.poor + 0.1 && r.keep.good > r.keep.poor + 0.1 && r.sta.poor > r.sta.good * 1.3;
+      const f = (a, b, d = 2) => `${a.toFixed(d)} v ${b.toFixed(d)}`;
+      return { pass: ok, evidence: `Squad of 18: attributes 15–99, overall = position-weighted sum, potential ≥ overall, names, ages and numbers present: ${r.model}; shirt numbers unique ${r.nums}. Rated 90 v 50 for pace, run speed ${f(r.speed.fast, r.speed.slow)} m/s. Passing 95 v 40: mean sideways miss over 25 m ${f(r.pass.good, r.pass.poor)} m. Shooting 95 v 40: share of shots from 20 m on target ${f(r.shot.good, r.shot.poor)}. Defending 95 v 35 against a 70 dribbler: standing tackles won ${f(r.tackle.good, r.tackle.poor)}. Goalkeeping 95 v 40: shots saved or parried ${f(r.keep.good, r.keep.poor)}. Stamina 95 v 40: stamina used in 5 s of sprinting ${f(r.sta.good, r.sta.poor, 3)}.` };
+    } },
+    { id: 'VC-42', title: 'Formation and line-up', reqs: ['SWR-121'], method: 'T', async run() {
+      const r = await ev(() => { const fe = window.__fe, M = fe.model; C.found('Lineup FC'); C.act('tab', '[data-v="squad"]'); const c = fe.career;
+        C.act('formation', '[data-v="4-3-3"]'); const F = M.FORMATIONS['4-3-3'], sq = id => c.squad.find(d => d.id === id);
+        const f433 = c.formation === '4-3-3' && sq(c.lineup[0]).pos === 'GK' && c.lineup.slice(0, 11).every((id, i) => sq(id).pos === F[i][0] || i > 0);
+        const slots = [...document.querySelectorAll('tr.pl td.slot')].slice(0, 11).map(t => t.textContent).join(',');
+        const fw = c.lineup.findIndex((id, i) => i < 11 && sq(id).pos === 'FW'), df = c.lineup.findIndex((id, i) => i >= 11 && sq(id).pos === 'DF');
+        const a = c.lineup[fw], b = c.lineup[df]; C.act('pick', `[data-i="${fw}"]`); const sel = !!document.querySelector('tr.pl.sel'); C.act('pick', `[data-i="${df}"]`);
+        const swapped = c.lineup[fw] === b && c.lineup[df] === a; const cell = document.querySelectorAll('tr.pl')[fw].querySelector('.ovr'), d = sq(b);
+        const warn = cell.classList.contains('warn') && +cell.textContent === d.ovr - 8 && M.effOvr(d, 'FW') === d.ovr - 8 && M.effOvr(sq(c.lineup[0]), 'FW') === Math.max(10, sq(c.lineup[0]).ovr - 35);
+        const saved = JSON.parse(localStorage.getItem('floodlight-eleven-career-v1')).lineup[fw] === b;
+        C.act('tab', '[data-v="home"]'); C.act('play'); const p = fe.humanTeam.roster[fw]; const scaled = Math.abs(p.st.pac - d.a.pac * 0.9 / 100) < 1e-9 && p.role === 'FW';
+        T.press('KeyP'); document.querySelector('#quit').click(); C.act('tab', '[data-v="squad"]'); C.act('auto'); const auto = sq(c.lineup[fw]).pos === 'FW';
+        return { f433, slots, sel, swapped, warn, saved, scaled, auto }; });
+      const ok = r.f433 && r.slots === 'GK,LB,CB,CB,RB,CM,DM,CM,LW,ST,RW' && r.sel && r.swapped && r.warn && r.saved && r.scaled && r.auto;
+      return { pass: ok, evidence: `Choosing 4-3-3 re-picked the eleven with a goalkeeper in slot 1: ${r.f433}; slots shown ${r.slots}. Tapping a forward highlighted the row ${r.sel}; tapping a substitute defender swapped them ${r.swapped} and saved it ${r.saved}. The defender in a forward slot shows his rating −8 in red ${r.warn} (keeper in an outfield slot −35). In the 3D match that player's attributes are scaled by 0.9 in the forward role ${r.scaled}. Auto-pick put a forward back in the slot ${r.auto}.` };
+    } },
+    { id: 'VC-43', title: 'Transfer market', reqs: ['SWR-123'], method: 'T', async run() {
+      const r = await ev(() => { const fe = window.__fe, M = fe.model; C.found('Market FC'); const c = fe.career; C.act('tab', '[data-v="transfers"]');
+        const mk = c.market.length, priced = c.market.every(d => d.free || d.price === M.value(d)); const names0 = c.market.map(d => d.first + d.last).join();
+        c.coins = 0; C.act('tab', '[data-v="transfers"]'); const disabledPoor = [...document.querySelectorAll('[data-act="buy"]')].filter(b => +c.market[+b.dataset.i].price > 0).every(b => b.disabled);
+        c.coins = 1e6; C.act('tab', '[data-v="transfers"]'); const d0 = c.market[0], price = d0.price, s0 = c.squad.length; C.act('buy', '[data-i="0"]');
+        const bought = c.coins === 1e6 - price && c.squad.length === s0 + 1 && c.squad.some(d => d.first === d0.first && d.last === d0.last && d.id) && c.lineup.length === c.squad.length;
+        while (c.squad.length < 25) C.act('buy', '[data-i="0"]'); const fullMsg = (() => { const b = document.querySelector('[data-act="buy"]'); return b && b.disabled; })();
+        const sid = c.squad[c.squad.length - 1].id, sd = c.squad.find(d => d.id === sid), sv = Math.round(M.value(sd) * 0.6), c1 = c.coins; C.act('sell', `[data-id="${sid}"]`);
+        const sold = c.coins === c1 + sv && !c.squad.some(d => d.id === sid) && !c.lineup.includes(sid);
+        while (c.squad.length > 16) { const b = document.querySelector('[data-act="sell"]:not([disabled])'); if (!b) break; b.click(); }
+        const minDisabled = c.squad.length === 16 && [...document.querySelectorAll('[data-act="sell"]')].every(b => b.disabled) && c.lineup.slice(0, 11).every(id => c.squad.some(d => d.id === id));
+        C.act('tab', '[data-v="home"]'); C.act('sim'); C.ack(); const names1 = c.market.map(d => d.first + d.last).join();
+        return { mk, priced, disabledPoor, bought, price, fullMsg, sold, sv, minDisabled, refreshed: names0 !== names1 }; });
+      const ok = r.mk === 19 && r.priced && r.disabledPoor && r.bought && r.fullMsg && r.sold && r.minDisabled && r.refreshed;
+      return { pass: ok, evidence: `Market lists ${r.mk} players, priced by rating and age ${r.priced}. With 0 coins every paid player's Buy is disabled ${r.disabledPoor}. Buying the first player for ${r.price} coins took the coins and added him to the squad and line-up ${r.bought}. At 25 players Buy is disabled ${r.fullMsg}. Selling returned 60% of value (${r.sv} coins) and removed him ${r.sold}. At 16 players every Sell is disabled and the eleven is still complete ${r.minDisabled}. After one match the market had new players ${r.refreshed}.` };
+    } },
+    { id: 'VC-44', title: 'Player development, ageing and youth', reqs: ['SWR-124'], method: 'T', async run() {
+      const r = await ev(() => { const fe = window.__fe; C.found('Growth FC'); const c = fe.career; let grew = 0;
+        for (let i = 0; i < 12; i++) { C.act('sim'); if (fe.cv.result) grew += fe.cv.result.grew.length; C.ack(); }
+        const sq = c.squad; const young = sq.slice(0, 3), old = sq.slice(3, 6), vets = sq.slice(6, 11);
+        young.forEach(d => { d.age = 20; d.pot = d.ovr + 10; }); old.forEach(d => { d.age = 32; }); vets.forEach(d => { d.age = 36; });
+        const snap = sq.map(d => ({ id: d.id, age: d.age, ovr: d.ovr })), ids = new Set(sq.map(d => d.id)); c.cup.winner = null; fe.careerApi.seasonEnd(); const s = fe.cv.season; fe.cv.season = null;
+        const now = id => c.squad.find(d => d.id === id), aged = snap.filter(x => now(x.id)).every(x => now(x.id).age === x.age + 1);
+        const youngUp = young.every(d => !now(d.id) || now(d.id).ovr > snap.find(x => x.id === d.id).ovr), oldDown = old.every(d => !now(d.id) || now(d.id).ovr < snap.find(x => x.id === d.id).ovr);
+        const retired = vets.filter(d => !now(d.id)).length, youth = c.squad.filter(d => !ids.has(d.id));
+        const lineupOk = c.lineup.length === c.squad.length && c.squad.find(d => d.id === c.lineup[0]).pos === 'GK';
+        return { grew, aged, youngUp, oldDown, retired, size: c.squad.length, youth: youth.length, youthAge: youth.every(d => d.age === 17), report: s.changes.retired.length === retired && s.changes.youth.length === youth.length, lineupOk }; });
+      const ok = r.grew > 0 && r.aged && r.youngUp && r.oldDown && r.retired >= 1 && r.size >= 18 && (r.youth === 0 || r.youthAge) && r.report && r.lineupOk;
+      return { pass: ok, evidence: `Across 12 simulated matches, ${r.grew} starters improved their overall rating. At the end of the season every remaining player is a year older ${r.aged}; three 20-year-olds with room to grow all improved ${r.youngUp}; three 32-year-olds all declined ${r.oldDown}; ${r.retired} of five 36-year-olds retired; ${r.youth} 17-year-old youth players joined, leaving ${r.size} players. The season report lists the retirements and youth players ${r.report}, and the new line-up is complete with a keeper in goal ${r.lineupOk}.` };
+    } },
+    { id: 'VC-45', title: 'Stadium expansion', reqs: ['SWR-131'], method: 'T', async run() {
+      const r = await ev(() => { const fe = window.__fe, M = fe.model; C.found('Ground FC'); const c = fe.career; c.coins = 1000; C.act('tab', '[data-v="club"]');
+        const disabled = document.querySelector('[data-act="upgrade"]').disabled; c.coins = 1300; C.act('tab', '[data-v="club"]'); C.act('upgrade');
+        const up = { level: c.club.stadium.level, coins: c.coins, cap: M.STADIUM_CAP[c.club.stadium.level], shown: document.querySelector('.tabbody').textContent.includes('6,000') };
+        const vis = []; for (let l = 1; l <= 5; l++) { fe.setStadium(l); const [m, e1, e2] = fe.stands; vis.push([e1.grp.visible && e2.grp.visible, m.roof.every(x => x.visible), e1.roof.every(x => x.visible) && e2.roof.every(x => x.visible)].map(Number).join('')); }
+        fe.setStadium(5); return { disabled, up, vis, caps: M.STADIUM_CAP.slice(1).join('/'), costs: M.STADIUM_COST.slice(2).join('/') }; });
+      const ok = r.disabled && r.up.level === 2 && r.up.coins === 100 && r.up.cap === 6000 && r.up.shown && r.vis.join() === '000,100,110,111,111' && r.caps === '2000/6000/14000/28000/48000' && r.costs === '1200/3500/9000/20000';
+      return { pass: ok, evidence: `With 1,000 coins the 1,200-coin upgrade is disabled ${r.disabled}. With 1,300 coins, expanding took the stadium to level ${r.up.level} (${r.up.cap} seats, shown ${r.up.shown}) and left ${r.up.coins} coins. Capacities ${r.caps}; costs ${r.costs}. Stands visible by level as [end stands, main roof, end roofs]: ${r.vis.join(' · ')}. Matches use the home club's stadium (VC-38).` };
+    } },
+    { id: 'VC-46', title: 'Through balls', reqs: ['SWR-140'], method: 'T, A', async run() {
+      const r = await ev(() => { const fe = window.__fe; T.start(0); const A = fe.teams[0], B = fe.teams[1], d = A.dir, gk = d > 0 ? 'KeyD' : 'KeyA'; const out = { n: 0, ok: 0, ahead: 0, got: 0 };
+        for (let i = 0; i < 20; i++) { T.toPlay(); T.reset(); const P = A.players[6], R = A.players[9]; T.park([P, R, ...B.players.slice(1, 5), B.players[0]]); P.x = 0; P.z = 0; T.face(P, d, 0); R.x = d * 12; R.z = 4 - (i % 3) * 4; B.players.slice(1, 5).forEach((o, k) => { o.x = d * 16; o.z = -15 + k * 10; o.stun = 1; });
+          T.give(P); T.step(1); const e0 = T.ev.length; T.key(gk, true); T.press('KeyI'); T.step(1); T.key(gk, false); const e = T.ev.slice(e0).find(e => e.k === 'pass'); if (!e) continue; out.n++;
+          if (e.through && e.q === R) out.ok++; const b = fe.ball, m = Math.hypot(b.vx, b.vz), stop = b.x + b.vx / m * (m - 7.5) / 0.55; if (b.vx * d / m > 0.7 && stop * d > R.x * d + 2) out.ahead++;
+          T.until(() => fe.ball.owner || fe.state !== 'play', 240); if (fe.ball.owner === R) out.got++; }
+        return out; });
+      const ai = aiStats; const perMatch = ai ? ai.through / ai.N : 0;
+      const ok = r.n === 20 && r.ok === 20 && r.ahead >= 18 && r.got >= 14 && perMatch >= 1;
+      return { pass: ok, evidence: `20 trials: I played ${r.n} passes, ${r.ok} flagged as through balls to the runner; ${r.ahead} sent into space at least 2 ahead of him; ${r.got} reached him. Computer teams played ${ai ? ai.through : 'n/a'} through balls in ${ai ? ai.N : 0} simulated matches (${perMatch.toFixed(1)} per match).` };
+    } },
+    { id: 'VC-47', title: 'Skill moves', reqs: ['SWR-141'], method: 'T, A', async run() {
+      const r = await ev(() => { const fe = window.__fe; T.start(0); const A = fe.teams[0], B = fe.teams[1], d = A.dir;
+        let skipped = 0; const trial = useSkill => { let steals = 0; for (let i = 0; i < 80; i++) { T.toPlay(); T.reset(); const P = A.players[6], O = B.players[6]; T.park([P, O]); P.x = 0; P.z = 0; T.face(P, d, 0); O.x = d * 1.0; O.z = 0.2; T.give(P); P.sta = 1; T.step(1);
+            if (useSkill) { T.press('KeyO'); } O.cool = 0; O.stun = 0; O.slideCD = 9; for (let k = 0; k < 21; k++) { O.x = fe.ball.x + d * 0.4; O.z = fe.ball.z; T.step(1); if (k === 0 && useSkill && P.skillT <= 0) { skipped++; break; } if (fe.ball.owner === O) { steals++; break; } } } return steals; };
+        const base = trial(false), skill = trial(true);
+        T.toPlay(); T.reset(); const P = A.players[6]; T.park([P]); P.x = 0; P.z = 0; T.face(P, d, 0); T.give(P); P.sta = 1; T.step(1); const x0 = P.x, z0 = P.z; T.press('KeyO'); T.step(1);
+        const t0 = P.skillT, cd = P.skillCD, sta = P.sta; T.step(23); const moved = Math.hypot(P.x - x0, P.z - z0); T.press('KeyO'); T.step(1); const again = P.skillT > 0;
+        return { base, skill, skipped, t0, cd, sta, moved, again, owner: fe.ball.owner === P }; });
+      const ai = aiStats, per = ai ? ai.skills / ai.N : 0;
+      const ok = r.base >= 12 && r.skill === 0 && r.skipped <= 8 && Math.abs(r.t0 - 0.4) < 0.02 && r.cd > 1.25 && Math.abs(r.sta - 0.97) < 0.005 && r.moved > 2 && !r.again && r.owner && per >= 0.5;
+      return { pass: ok, evidence: `A defender kept on the ball for 0.35 s took it ${r.base} times in 80 trials without a skill move and ${r.skill} times in ${80 - r.skipped} trials where the move started (${r.skipped} did not start because control had not passed to the dribbler). Pressing O started a ${r.t0.toFixed(2)} s move with a ${r.cd.toFixed(2)} s cooldown, cost ${(1 - r.sta).toFixed(3)} stamina and carried the player ${r.moved.toFixed(1)} with the ball (still his: ${r.owner}); pressing again at once did nothing ${!r.again}. Computer dribblers made ${ai ? ai.skills : 'n/a'} skill moves in ${ai ? ai.N : 0} matches (${per.toFixed(1)} per match).` };
+    } },
+    { id: 'VC-48', title: 'Stamina', reqs: ['SWR-142'], method: 'T, A', async run() {
+      const r = await ev(() => { const fe = window.__fe, M = fe.model; T.start(0); const A = fe.teams[0], d = A.dir;
+        const run = sprint => { T.toPlay(); T.reset(); const me = A.players[6]; T.park([me]); me.x = -25; me.z = 0; T.give(me); T.step(1); me.sta = 1; T.key('KeyD', true); if (sprint) T.key('ShiftLeft', true); T.step(300); T.key('KeyD', false); T.key('ShiftLeft', false); return 1 - me.sta; };
+        const sprint = run(true), jog = run(false);
+        const rest = (() => { T.toPlay(); T.reset(); const me = A.players[6]; T.park([me]); T.give(me); T.step(1); me.sta = 0.5; T.step(300); return me.sta - 0.5; })();
+        const p = A.players[5]; p.sta = 1; const fresh = M.runSpeed(p); p.sta = 0.2; const tired = M.runSpeed(p); p.sta = 1;
+        T.start(-1, 180); T.until(() => fe.state === 'halftime', 20000); fe.all.forEach(q => q.sta = 0.5); T.until(() => fe.half === 2, 2000); const ht = Math.min(...fe.all.map(q => q.sta));
+        return { sprint, jog, rest, ratio: tired / fresh, ht }; });
+      const ai = aiStats, ft = ai ? ai.ftSta / ai.N : 0;
+      const ok = r.sprint > r.jog * 1.3 && r.rest > 0 && r.ratio < 0.95 && r.ht >= 0.64 && ft >= 0.4 && ft <= 0.8;
+      return { pass: ok, evidence: `5 s of sprinting used ${r.sprint.toFixed(3)} stamina; 5 s of running ${r.jog.toFixed(3)}. Standing still for 5 s recovered ${r.rest.toFixed(3)}. Running speed at 20% stamina is ${(r.ratio * 100).toFixed(0)}% of a fresh player's. Half time took every player from 0.50 to at least ${r.ht.toFixed(2)}. Average outfield stamina at full time over ${ai ? ai.N : 0} simulated matches: ${ft.toFixed(2)}.` };
+    } },
+    { id: 'VC-49', title: 'Substitutions', reqs: ['SWR-143'], method: 'T, A', async run() {
+      const r = await ev(() => { const fe = window.__fe; T.start(0); T.toPlay(); T.step(60); const A = fe.teams[0], q = s => document.querySelector(s);
+        T.press('KeyP'); const btn = !q('#subsBtn').hidden; q('#subsBtn').click(); const panel = !q('#subsPanel').hidden && q('#pauseMain').hidden;
+        const p = A.players[5], out = p.data, inn = A.bench[0]; p.sta = 0.3; q('[data-sp="5"]').click(); q('[data-sb="0"]').click();
+        const one = { swapped: p.data === inn && p.sta === 1 && p.num === inn.num, subs: A.subs, bench: A.bench.length, toast: q('#toast').textContent, outGone: !A.players.some(x => x.data === out) };
+        for (let i = 0; i < 4; i++) { q(`[data-sp="${i + 1}"]`).click(); q('[data-sb="0"]').click(); }
+        const five = { subs: A.subs, disabled: [...document.querySelectorAll('#subsPanel [data-sp],#subsPanel [data-sb]')].every(b => b.disabled) };
+        q('#subsDone').click(); const back = !q('#pauseMain').hidden; T.press('KeyP'); const watch = (() => { T.start(-1); T.toPlay(); T.press('KeyP'); const h = q('#subsBtn').hidden; T.press('KeyP'); return h; })();
+        return { btn, panel, one, five, back, watch }; });
+      const ai = aiStats; const okAi = ai && ai.subs > 0 && ai.subsMaxTeam <= 3 && ai.subsEarliest >= 55;
+      const ok = r.btn && r.panel && r.one.swapped && r.one.subs === 1 && r.one.bench === 4 && /SUBSTITUTION/.test(r.one.toast) && r.one.outGone && r.five.subs === 5 && r.five.disabled && r.back && r.watch && okAi;
+      return { pass: !!ok, evidence: `Pause menu shows Substitutions ${r.btn}; it opens the panel ${r.panel}. Swapping a tired player for the first substitute put the new player on with full stamina ${r.one.swapped}; ${r.one.subs} used, ${r.one.bench} left on the bench; announced "${r.one.toast}". After 5 substitutions every button is disabled ${r.five.disabled}. Done returns to the pause menu ${r.back}; in Watch mode the button is hidden ${r.watch}. Computer teams made ${ai ? ai.subs : 'n/a'} substitutions in ${ai ? ai.N : 0} matches, at most ${ai ? ai.subsMaxTeam : '?'} per team per match, the earliest at ${ai ? ai.subsEarliest.toFixed(1) : '?'}'.` };
+    } },
+    { id: 'VC-50', title: 'Name tag over the controlled player', reqs: ['SWR-144'], method: 'T', async run(pg) {
+      const r = await ev(() => { const fe = window.__fe, q = s => document.querySelector(s); T.start(0); T.toPlay(); T.step(120); const c = fe.ctrl; c.sta = 0.42; fe.sim(1);
+        const o = { shown: !q('#pname').hidden, text: q('#pname span').textContent, expect: `${c.num} ${c.data.last.toUpperCase()}`, width: q('#pname b').style.width };
+        const rect = q('#pname').getBoundingClientRect(); o.onScreen = rect.width > 0 && rect.left >= 0 && rect.right <= innerWidth; T.start(-1); T.toPlay(); fe.sim(1); o.watch = q('#pname').hidden; return o; });
+      const ok = r.shown && r.text === r.expect && r.width === '42%' && r.onScreen && r.watch;
+      return { pass: ok, evidence: `Tag shown ${r.shown} reading "${r.text}" (expected "${r.expect}"), on screen ${r.onScreen}; stamina bar ${r.width} for stamina 0.42. Hidden in Watch mode ${r.watch}.` };
+    } },
+  ];
+}
 
 // ---------------------------------------------------------------- report
 function gitInfo() {
@@ -477,7 +722,7 @@ function writeReport(meta) {
   const pg = await newPage();
   await pg.addScriptTag({ content: OFFSIDE_HELPER + STATS_HELPER });
   await pg.screenshot({ path: path.join(OUT_DIR, 'menu.png') }).catch(() => {});
-  const list = [...cases(pg), ...moreCases()];
+  const list = [...cases(pg), ...moreCases(), ...careerCases(pg)];
   const only = process.argv.slice(2);
   for (const c of list) {
     if (only.length && !only.includes(c.id)) continue;
@@ -491,12 +736,13 @@ function writeReport(meta) {
   if (!only.length || only.includes('VC-34')) {
     const ok = pageErrors.length === 0;
     results.push({ id: 'VC-34', title: 'No script errors across the whole run', reqs: ['SWR-003'], method: 'T', pass: ok,
-      evidence: `${pageErrors.length} uncaught errors or console errors (other than blocked web-font requests) were recorded across every page and match in this run, including ${16} complete 5-minute matches and several 3-minute matches.` });
+      evidence: `${pageErrors.length} uncaught errors or console errors (other than blocked web-font requests) were recorded across every page and match in this run, including 16 complete 5-minute matches, several 3-minute matches and the career-mode cases.` });
     console.log(`VC-34 No script errors ... ${ok ? 'PASS' : 'FAIL'}`);
   }
   const meta = { ...gitInfo(), date: new Date().toISOString().replace('T', ' ').slice(0, 16) + ' UTC', browser: browser.version(), os: `${process.platform} ${require('os').release()}`, secs: (Date.now() - t0) / 1000 };
   await browser.close();
   if (only.length) { console.log('(partial run: report not written)'); return; }
+  results.sort((a, b) => +a.id.slice(3) - +b.id.slice(3));
   const counts = writeReport(meta);
   console.log(`\n${counts.PASS} passed, ${counts.FAIL} failed, ${counts.NR} not run. Report: docs/VERIFICATION_RESULTS.md`);
   process.exitCode = counts.FAIL ? 1 : 0;

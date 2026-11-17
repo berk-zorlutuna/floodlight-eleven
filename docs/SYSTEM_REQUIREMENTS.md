@@ -4,7 +4,7 @@
 | --- | --- |
 | Document | SYS — System Requirements Specification |
 | Product | Floodlight Eleven, a 3D 11-a-side football game for the web browser |
-| Version | 1.0 |
+| Version | 1.1 (adds career mode, squads, club identity and match depth) |
 | Related | [Software Requirements](SOFTWARE_REQUIREMENTS.md) · [Verification Cases](VERIFICATION_CASES.md) · [Verification Results](VERIFICATION_RESULTS.md) |
 
 ## 1. Purpose and scope
@@ -12,6 +12,8 @@
 This document states what the Floodlight Eleven game must do, as seen by a player. It is the top level of the requirement tree. Each system requirement is refined into software requirements (SWR) in the Software Requirements Specification. Those are verified by the cases in the Verification Cases document.
 
 The system is a single-player football game. One person controls one team against a computer-controlled team, or watches two computer teams play. The match follows a simplified version of the Laws of the Game.
+
+Besides one-off matches, the user can found a club and run it over many seasons. They manage its squad, finances, identity and stadium, and climb a ladder of divisions.
 
 ## 2. Operating context
 
@@ -59,9 +61,16 @@ The system is a single-player football game. One person controls one team agains
 
 **SYS-12 — Input.** The user shall control the game with a keyboard on desktop computers, and with on-screen touch controls on touch-screen devices.
 
-**SYS-13 — Ball skills.** The user shall be able to move, sprint, pass along the ground, play lofted passes, shoot with variable power, switch player, and win the ball with standing and sliding tackles.
+**SYS-13 — Ball skills.** The user shall be able to:
+- move, sprint and switch player
+- pass along the ground, play lofted passes and through balls
+- shoot with variable power
+- beat a defender with a skill move
+- win the ball with standing and sliding tackles
 
 **SYS-14 — Playability.** Passes to the user's team shall be reliably receivable. Goalkeepers shall save a realistic share of shots, so that the score stays plausible for football.
+
+**SYS-25 — Match depth.** Players shall tire as they run and recover as they rest. Tired players shall be slower and less accurate. Both teams shall be able to make substitutions. The user shall always see the name, number and stamina of the player they control.
 
 ### 4.5 Presentation
 
@@ -75,7 +84,22 @@ The system is a single-player football game. One person controls one team agains
 
 **SYS-19 — Screen sizes.** The game shall be usable on phone screens in landscape and portrait as well as on desktop screens, without horizontal scrolling.
 
-### 4.6 Quality
+### 4.6 Career and club management
+
+**SYS-22 — Career mode.** The user shall be able to found a club and run it over consecutive seasons:
+- the club plays in a league of several divisions with promotion and relegation, plus a knockout cup
+- each fixture can be played or simulated
+- progress persists between visits and can be exported and imported
+
+**SYS-23 — Squad management.** The user shall manage a squad of named, rated players. Players' ratings shall affect how they play. The user shall:
+- choose the formation, starting eleven and substitutes
+- earn coins from matches and spend them buying players, or raise coins by selling them
+
+Players shall improve, decline and retire over time.
+
+**SYS-24 — Club identity.** The user shall choose the club's name, short name, crest and home and away kits, and expand its stadium. These shall appear in matches and throughout the career screens.
+
+### 4.7 Quality
 
 **SYS-20 — Robustness.** The game shall run complete matches without script errors.
 
@@ -97,7 +121,7 @@ The system is a single-player football game. One person controls one team agains
 | SYS-10 | SWR-040, SWR-041, SWR-042 |
 | SYS-11 | SWR-043, SWR-044, SWR-045 |
 | SYS-12 | SWR-090, SWR-091 |
-| SYS-13 | SWR-070, SWR-080, SWR-081, SWR-090 |
+| SYS-13 | SWR-070, SWR-080, SWR-081, SWR-090, SWR-140, SWR-141 |
 | SYS-14 | SWR-061, SWR-071, SWR-072, SWR-073 |
 | SYS-15 | SWR-090 |
 | SYS-16 | SWR-045, SWR-092 |
@@ -106,3 +130,7 @@ The system is a single-player football game. One person controls one team agains
 | SYS-19 | SWR-095 |
 | SYS-20 | SWR-003 |
 | SYS-21 | SWR-100, SWR-101 |
+| SYS-22 | SWR-110, SWR-111, SWR-112, SWR-113, SWR-114, SWR-115, SWR-116, SWR-117 |
+| SYS-23 | SWR-120, SWR-121, SWR-122, SWR-123, SWR-124 |
+| SYS-24 | SWR-110, SWR-130, SWR-131 |
+| SYS-25 | SWR-142, SWR-143, SWR-144 |

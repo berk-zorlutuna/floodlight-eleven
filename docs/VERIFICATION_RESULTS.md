@@ -3,16 +3,16 @@
 | | |
 | --- | --- |
 | Document | Software Verification Results |
-| Software under test | `floodlight-eleven.html` at commit `eab8d69` |
-| Run | 2026-11-17 12:11 UTC |
+| Software under test | `floodlight-eleven.html` at commit `2403146` plus uncommitted changes |
+| Run | 2026-11-17 13:26 UTC |
 | Procedure | [Verification Cases](VERIFICATION_CASES.md), executed by `tests/verify.js` |
 | Environment | Headless Chromium 153.0.8010.12, Node v22.23.4, linux 6.18.44-fc-v553; three.js r128 served from the local npm package; web fonts blocked |
 | Random seed | 20261117 (`Math.random` is seeded, so a rerun on the same code gives the same results) |
-| Duration | 49 s |
+| Duration | 58 s |
 
 ## 1. Summary
 
-**33 passed, 0 failed, 1 not run (manual)** out of 34 verification cases.
+**49 passed, 0 failed, 1 not run (manual)** out of 50 verification cases.
 
 ## 2. Results by case
 
@@ -52,6 +52,22 @@
 | [VC-32](#vc-32) | Simulated computer-vs-computer matches | SWR-032, SWR-061, SWR-073, SWR-082 | A | **PASS** |
 | [VC-33](#vc-33) | Scripted-user pass completion | SWR-073 | A | **PASS** |
 | [VC-34](#vc-34) | No script errors across the whole run | SWR-003 | T | **PASS** |
+| [VC-35](#vc-35) | Founding a club | SWR-110 | T | **PASS** |
+| [VC-36](#vc-36) | Season structure, league table and cup | SWR-111, SWR-112, SWR-114 | T | **PASS** |
+| [VC-37](#vc-37) | Promotion, relegation and prize money | SWR-113 | T | **PASS** |
+| [VC-38](#vc-38) | Playing a career fixture in 3D | SWR-115, SWR-130, SWR-131 | T | **PASS** |
+| [VC-39](#vc-39) | Match earnings | SWR-116 | T | **PASS** |
+| [VC-40](#vc-40) | Saving, reloading, export, import, delete | SWR-117 | T | **PASS** |
+| [VC-41](#vc-41) | Player model and ratings in play | SWR-120, SWR-122 | T | **PASS** |
+| [VC-42](#vc-42) | Formation and line-up | SWR-121 | T | **PASS** |
+| [VC-43](#vc-43) | Transfer market | SWR-123 | T | **PASS** |
+| [VC-44](#vc-44) | Player development, ageing and youth | SWR-124 | T | **PASS** |
+| [VC-45](#vc-45) | Stadium expansion | SWR-131 | T | **PASS** |
+| [VC-46](#vc-46) | Through balls | SWR-140 | T, A | **PASS** |
+| [VC-47](#vc-47) | Skill moves | SWR-141 | T, A | **PASS** |
+| [VC-48](#vc-48) | Stamina | SWR-142 | T, A | **PASS** |
+| [VC-49](#vc-49) | Substitutions | SWR-143 | T, A | **PASS** |
+| [VC-50](#vc-50) | Name tag over the controlled player | SWR-144 | T | **PASS** |
 
 ## 3. Requirement coverage
 
@@ -128,13 +144,13 @@ Watch mode: user team none, controlled player none. Playing as Northvale: 200 sa
 
 **Match clock, half time and change of ends** — SWR-020, SWR-021 — PASS
 
-3-minute match (L=180 s). Half time at 90.02 s of play = 45.01'. Clock moved in 0 of 566 steps with the ball out of play. Attacking directions 1/-1 → -1/1. First-half kick-off HAR, second-half kick-off NOR.
+3-minute match (L=180 s). Half time at 90.02 s of play = 45.01'. Clock moved in 0 of 897 steps with the ball out of play. Attacking directions 1/-1 → -1/1. First-half kick-off HAR, second-half kick-off NOR.
 
 ### VC-06
 
 **Full time, result screen and replay reset** — SWR-022, SWR-045 — PASS
 
-Full time at 180.00 s of play (90'); full-time screen shown with 0–1 (expected 0–1) and "Northvale take the derby. Cards: HAR 1Y 0R · NOR 2Y 1R". Player sent off before full time: true. After PLAY AGAIN: score 0-0, squads 11/11 (22 players), cards 0/0, red markers 0, state kickoff.
+Full time at 180.00 s of play (90'); full-time screen shown with 0–1 (expected 0–1) and "Northvale take the derby. Cards: HAR 0Y 0R · NOR 1Y 1R". Player sent off before full time: true. After PLAY AGAIN: score 0-0, squads 11/11 (22 players), cards 0/0, red markers 0, state kickoff.
 
 ### VC-07
 
@@ -176,13 +192,13 @@ onside: receiver 22, line 26, ball 12 → ball won by receiver, offside +0; ownH
 
 **Standing-tackle fouls by direction** — SWR-040 — PASS
 
-From the front: 5/60 fouls (8.3%), 40 balls won. From behind: 36/60 fouls (60.0%), 17 balls won.
+From the front: 7/60 fouls (11.7%), 45 balls won. From behind: 36/60 fouls (60.0%), 18 balls won.
 
 ### VC-14
 
 **Free kick: award, wall distance, kick taken** — SWR-041, SWR-042 — PASS
 
-#1: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.16 at the kick, taker pass ; #2: freekick to fouled team true, 0.00 from foul spot, nearest opponent 11.35 at the kick, taker pass ; #3: freekick to fouled team true, 0.00 from foul spot, nearest opponent 14.96 at the kick, taker pass ; #4: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.17 at the kick, taker pass ; #5: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.19 at the kick, taker pass .
+#1: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.21 at the kick, taker pass ; #2: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.19 at the kick, taker pass ; #3: freekick to fouled team true, 0.00 from foul spot, nearest opponent 11.27 at the kick, taker pass ; #4: freekick to fouled team true, 0.00 from foul spot, nearest opponent 14.48 at the kick, taker pass ; #5: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.17 at the kick, taker pass .
 
 ### VC-15
 
@@ -212,49 +228,49 @@ Dropped from 3.0: first rebound peak 0.92, at rest after 2.13 s. Rolled at 10: s
 
 **Goalkeeper dives to the crossing point** — SWR-060 — PASS
 
-aim z=-3: keeper 0.69 from the ball at the crossing, overshoot 0.00, parried; aim z=-2: keeper 0.21 from the ball at the crossing, overshoot 0.47, parried; aim z=-1: keeper 0.05 from the ball at the crossing, overshoot 0.05, parried; aim z=1: keeper 0.06 from the ball at the crossing, overshoot 0.34, parried; aim z=2: keeper 0.40 from the ball at the crossing, overshoot 0.00, goal; aim z=3: keeper 0.52 from the ball at the crossing, overshoot 0.00, goal. Shots at 24 from 18 out.
+aim z=-3: keeper 0.18 from the ball at the crossing, overshoot 0.18, caught; aim z=-2: keeper 0.04 from the ball at the crossing, overshoot 0.00, goal; aim z=-1: keeper 0.10 from the ball at the crossing, overshoot 0.73, parried; aim z=1: keeper 0.18 from the ball at the crossing, overshoot 0.72, parried; aim z=2: keeper 0.83 from the ball at the crossing, overshoot 0.00, parried; aim z=3: keeper 0.32 from the ball at the crossing, overshoot 0.32, parried. Shots at 24 from 18 out.
 
 ### VC-20
 
 **Receive assist** — SWR-071 — PASS
 
-No key held: control on receiver true, ball received true. Holding toward goal (along the pass): control on receiver true, ball received true. Holding sideways: control on receiver true, ball received true. Pass running across in front, user pushing away: assist cancelled true on the first frame and the player runs where the user pushes (target speed 6.4 in the pushed direction). After that the existing auto-switch may hand control to whoever is nearest the ball.
+No key held: control on receiver true, ball received true. Holding toward goal (along the pass): control on receiver true, ball received true. Holding sideways: control on receiver true, ball received true. Pass running across in front, user pushing away: assist cancelled true on the first frame and the player runs where the user pushes (target speed 6.5 in the pushed direction). After that the existing auto-switch may hand control to whoever is nearest the ball.
 
 ### VC-21
 
 **Pass assist avoids blocked lanes; lofted pass** — SWR-070 — PASS
 
-Two team-mates ahead, one with an opponent in the lane. J: ground pass to the clear-lane mate. L: lofted pass (lob flag true), ball peak height 1.3.
+Two team-mates ahead, one with an opponent in the lane. J: ground pass to the clear-lane mate. L: lofted pass (lob flag true), ball peak height 1.4.
 
 ### VC-22
 
 **Kicks are only sometimes blocked at source** — SWR-072 — PASS
 
-Opponent 0.9 in front of the passer blocked 14 of 80 passes (17.5%).
+Opponent 0.9 in front of the passer blocked 9 of 80 passes (11.3%).
 
 ### VC-23
 
 **Sliding tackle: trigger, motion, outcome** — SWR-080, SWR-081 — PASS
 
-From the front: 40 slides, ball won 36 (90.0%), fouls 4 (10.0%; 2 yellow, 0 red), carrier kept ball 0. From the side: 40 slides, ball won 36 (90.0%), fouls 4 (10.0%; 0 yellow, 0 red), carrier kept ball 0. From behind: 40 slides, ball won 0 (0.0%), fouls 40 (100.0%; 34 yellow, 4 red), carrier kept ball 0. Free slide: lasted 0.68 s, covered 3.14, recovery 0.40 s, second slide straight after: false. K while own team has the ball: slide false. K during an opponents' free kick: slide false.
+From the front: 40 slides, ball won 37 (92.5%), fouls 3 (7.5%; 1 yellow, 0 red), carrier kept ball 0. From the side: 40 slides, ball won 39 (97.5%), fouls 1 (2.5%; 0 yellow, 0 red), carrier kept ball 0. From behind: 40 slides, ball won 0 (0.0%), fouls 40 (100.0%; 35 yellow, 2 red), carrier kept ball 0. Free slide: lasted 0.68 s, covered 3.14, recovery 0.40 s, second slide straight after: false. K while own team has the ball: slide false. K during an opponents' free kick: slide false.
 
 ### VC-24
 
 **Keyboard controls** — SWR-090 — PASS
 
-1 s of D: 5.3 along x; →: 5.3; W: -5.3 along z; ↓: 5.3; A: -5.3; D+Shift: 6.3. J ground, Z ground, L lob, C lob pass. K: power bar true, shot true; X: power bar true, shot true. Space switched true, Q switched true. V: BROADCAST CAM → PITCHSIDE CAM → TACTICAL CAM → BROADCAST CAM. M: SOUND OFF / SOUND ON. P,P,Esc,Esc paused: true,false,true,false.
+1 s of D: 5.4 along x; →: 5.4; W: -5.4 along z; ↓: 5.4; A: -5.4; D+Shift: 6.4. J ground, Z ground, L lob, C lob pass. K: power bar true, shot true; X: power bar true, shot true. Space switched true, Q switched true. V: BROADCAST CAM → PITCHSIDE CAM → TACTICAL CAM → BROADCAST CAM. M: SOUND OFF / SOUND ON. P,P,Esc,Esc paused: true,false,true,false.
 
 ### VC-25
 
 **Touch controls** — SWR-091 — PASS
 
-Emulated phone 844 × 390 with touch (coarse pointer true). Touch controls shown true, keyboard hints shown false, mini-map shown false. Buttons: SWITCH, LOB, SPRINT, PASS, SHOOT. Shoot button reads "SLIDE" when defending, "SHOOT" in possession. Tapping PASS passed the ball: true. Screenshot: docs/verification/touch-landscape.png.
+Emulated phone 844 × 390 with touch (coarse pointer true). Touch controls shown true, keyboard hints shown false, mini-map shown false. Buttons: SWITCH, LOB, SPRINT, SKILL, PASS, SHOOT, THRU. Shoot button reads "SLIDE" when defending, "SHOOT" in possession. Tapping PASS passed the ball: true. Screenshot: docs/verification/touch-landscape.png.
 
 ### VC-26
 
 **Heads-up display** — SWR-092 — PASS
 
-Scoreboard shown true: HAR 0–0 NOR, clock 5' (expected 5'), 1ST HALF. Camera label true, mini-map true, key hints true when playing and false in Watch mode, power bar false when not shooting. Screenshot: docs/verification/hud-desktop.png.
+Scoreboard shown true: HAR 0–0 NOR, clock 4' (expected 4'), 1ST HALF. Camera label true, mini-map true, key hints true when playing and false in Watch mode, power bar false when not shooting. Screenshot: docs/verification/hud-desktop.png.
 
 ### VC-27
 
@@ -266,7 +282,7 @@ P showed the pause screen true ("Harbor City 0 – 0 Northvale · 0'"); clock fr
 
 **Audio start, whistle and mute** — SWR-094 — PASS
 
-Audio contexts before KICK OFF 0, after 1. Oscillators (whistle) 0 → 2 at kick-off. Buffer sources (crowd, kicks) 1 → 13 after 10 s of play. M: "SOUND OFF", then "SOUND ON". Whether the sound is actually heard is checked by demonstration (VC-31 session).
+Audio contexts before KICK OFF 0, after 1. Oscillators (whistle) 0 → 2 at kick-off. Buffer sources (crowd, kicks) 1 → 12 after 10 s of play. M: "SOUND OFF", then "SOUND ON". Whether the sound is actually heard is checked by demonstration (VC-31 session).
 
 ### VC-29
 
@@ -278,7 +294,7 @@ Audio contexts before KICK OFF 0, after 1. Oscillators (whistle) 0 → 2 at kick
 
 **Simulation step cost** — SWR-100 — PASS
 
-3600 steps (60 s of match time) in 59 ms of CPU: 0.016 ms per step on the verification machine.
+3600 steps (60 s of match time) in 53 ms of CPU: 0.015 ms per step on the verification machine.
 
 ### VC-31
 
@@ -290,19 +306,115 @@ Manual demonstration: play a 5-minute match on a computer with a hardware GPU an
 
 **Simulated computer-vs-computer matches** — SWR-032, SWR-061, SWR-073, SWR-082 — PASS
 
-10 matches of 5 minutes, both teams computer-controlled. Shots 109, goals 19: conversion 17.4% (1.9 goals per match). Ground passes received 545/684 (79.7%). Lofted passes received 509/680 (74.9%). Per match: sliding tackles 4.0, offsides 0.1, fouls 2.4, yellow cards 1.0, red cards 0.00.
+10 matches of 5 minutes, both teams computer-controlled. Shots 137, goals 24: conversion 17.5% (2.4 goals per match). Ground passes received 552/691 (79.9%). Lofted passes received 464/639 (72.6%). Per match: sliding tackles 4.2, offsides 0.1, fouls 2.0, yellow cards 0.8, red cards 0.20.
 
 ### VC-33
 
 **Scripted-user pass completion** — SWR-073 — PASS
 
-6 matches of 5 minutes as Harbor City. The scripted user dribbles toward goal, passes with J every 0.7–1.7 s and keeps holding the forward key for 0.5 s after each pass. User ground passes received 103/111 (92.8%); 0 lost by the receiver within 1.5 of the ball, the rest intercepted on the way.
+6 matches of 5 minutes as Harbor City. The scripted user dribbles toward goal, passes with J every 0.7–1.7 s and keeps holding the forward key for 0.5 s after each pass. User ground passes received 66/76 (86.8%); 0 lost by the receiver within 1.5 of the ball, the rest intercepted on the way.
 
 ### VC-34
 
 **No script errors across the whole run** — SWR-003 — PASS
 
-0 uncaught errors or console errors (other than blocked web-font requests) were recorded across every page and match in this run, including 16 complete 5-minute matches and several 3-minute matches.
+0 uncaught errors or console errors (other than blocked web-font requests) were recorded across every page and match in this run, including 16 complete 5-minute matches, several 3-minute matches and the career-mode cases.
+
+### VC-35
+
+**Founding a club** — SWR-110 — PASS
+
+Create screen shown true. Typed name cut to 22 characters: "Test Rovers Football C"; short name "tr1x" → "TR1"; crest letters "trx9" → "TRX" (preview shows them true). Crest diamond/hoops/#7b2cbf; home shirt #f2c94c; away shorts #111827; opposition 2, match 180 s. New club: tier 0 (Division 5), 1000 coins, season 1, 18 players (GK-DF-MF-FW 2-6-6-4), stadium level 1, lineup of 18; hub shown true.
+
+### VC-36
+
+**Season structure, league table and cup** — SWR-111, SWR-112, SWR-114 — PASS
+
+14 matchdays of 4 matches with all 8 clubs each time: true; 56 distinct home-and-away pairings (8 × 7 = 56). Event order LLLC0LLLLC1LLLLC2LLL (L league, C0–C2 cup rounds). After 13 simulated matchdays: every club has 13 played with W+D+L = 13, goals for = goals against overall, table sorted by points, goal difference, goals: true. Cup: quarter-finals 4, semi-finals 2, final 1, winner set, every winner consistent with score or penalties: true (2 ties went to penalties). Final matchday led to the end-of-season screen true; history has 1 season; now season 2.
+
+### VC-37
+
+**Promotion, relegation and prize money** — SWR-113 — PASS
+
+tier 0, finished 1: move +1, now tier 1, prize 1760 (coins +1760); tier 0, finished 2: move +1, now tier 1, prize 840 (coins +840); tier 0, finished 3: move 0, now tier 0, prize 720 (coins +720); tier 0, finished 8: move 0, now tier 0, prize 120 (coins +120); tier 3, finished 7: move -1, now tier 2, prize 600 (coins +600); tier 3, finished 8: move -1, now tier 2, prize 300 (coins +300); tier 5, finished 1: move 0, now tier 5, prize 6160 (coins +6160); tier 5, finished 8: move -1, now tier 4, prize 420 (coins +420); tier 2, finished 2: move +1, now tier 3, prize 1680 (coins +1680). Tier 0 is Division 5, tier 5 the Elite Division.
+
+### VC-38
+
+**Playing a career fixture in 3D** — SWR-115, SWR-130, SWR-131 — PASS
+
+PLAY MATCH started the 3D match true with the user controlling "Pitch Test" (away); the user's starting eleven is on the pitch in lineup order true; stadium level 1 = home club's level 1; crests on the scoreboard 2. With home shirts forced to clash, the away side wore its away kit true (shirts #7b2cbf v #f2f6f9). After full time and CONTINUE: result recorded in the table true, result screen matches the score true, coins added equal the shown total true, back in the career screens true. Leaving the next match from the pause menu ("Leave match (not counted)"): fixture not consumed true, still 1 played, career screens shown true.
+
+### VC-39
+
+**Match earnings** — SWR-116 — PASS
+
+W (away, 3 scored): Win bonus +150, Goals scored (3) +45; total 195, coins +195. D (home, 2 scored): Draw bonus +70, Goals scored (2) +30, Gate receipts, 1,299 fans +32; total 132, coins +132. L (away, 0 scored): Appearance fee +30, Goals scored (0) +0; total 30, coins +30.
+
+### VC-40
+
+**Saving, reloading, export, import, delete** — SWR-117 — PASS
+
+Before reload: {"name":"Saved FC","coins":6190,"ev":2,"squad":19,"P":2}. After reloading the page and opening Career: {"name":"Saved FC","coins":6190,"ev":2,"squad":19,"P":2,"hub":"Saved FC"} (identical true). Export downloaded "floodlight-eleven-flt-season1.json" with club "Saved FC" and 6190 coins. Delete (confirmed): career cleared true, storage entry removed true, create screen shown true. Importing the exported file restored "Saved FC" with 6190 coins ("Save imported."). Importing an unrelated JSON file was refused ("That file is not a Floodlight Eleven career save.") and kept the career.
+
+### VC-41
+
+**Player model and ratings in play** — SWR-120, SWR-122 — PASS
+
+Squad of 18: attributes 15–99, overall = position-weighted sum, potential ≥ overall, names, ages and numbers present: true; shirt numbers unique true. Rated 90 v 50 for pace, run speed 7.31 v 6.21 m/s. Passing 95 v 40: mean sideways miss over 25 m 0.14 v 0.59 m. Shooting 95 v 40: share of shots from 20 m on target 0.92 v 0.77. Defending 95 v 35 against a 70 dribbler: standing tackles won 0.87 v 0.62. Goalkeeping 95 v 40: shots saved or parried 0.97 v 0.80. Stamina 95 v 40: stamina used in 5 s of sprinting 0.017 v 0.027.
+
+### VC-42
+
+**Formation and line-up** — SWR-121 — PASS
+
+Choosing 4-3-3 re-picked the eleven with a goalkeeper in slot 1: true; slots shown GK,LB,CB,CB,RB,CM,DM,CM,LW,ST,RW. Tapping a forward highlighted the row true; tapping a substitute defender swapped them true and saved it true. The defender in a forward slot shows his rating −8 in red true (keeper in an outfield slot −35). In the 3D match that player's attributes are scaled by 0.9 in the forward role true. Auto-pick put a forward back in the slot true.
+
+### VC-43
+
+**Transfer market** — SWR-123 — PASS
+
+Market lists 19 players, priced by rating and age true. With 0 coins every paid player's Buy is disabled true. Buying the first player for 315 coins took the coins and added him to the squad and line-up true. At 25 players Buy is disabled true. Selling returned 60% of value (78 coins) and removed him true. At 16 players every Sell is disabled and the eleven is still complete true. After one match the market had new players true.
+
+### VC-44
+
+**Player development, ageing and youth** — SWR-124 — PASS
+
+Across 12 simulated matches, 5 starters improved their overall rating. At the end of the season every remaining player is a year older true; three 20-year-olds with room to grow all improved true; three 32-year-olds all declined true; 2 of five 36-year-olds retired; 2 17-year-old youth players joined, leaving 18 players. The season report lists the retirements and youth players true, and the new line-up is complete with a keeper in goal true.
+
+### VC-45
+
+**Stadium expansion** — SWR-131 — PASS
+
+With 1,000 coins the 1,200-coin upgrade is disabled true. With 1,300 coins, expanding took the stadium to level 2 (6000 seats, shown true) and left 100 coins. Capacities 2000/6000/14000/28000/48000; costs 1200/3500/9000/20000. Stands visible by level as [end stands, main roof, end roofs]: 000 · 100 · 110 · 111 · 111. Matches use the home club's stadium (VC-38).
+
+### VC-46
+
+**Through balls** — SWR-140 — PASS
+
+20 trials: I played 20 passes, 20 flagged as through balls to the runner; 20 sent into space at least 2 ahead of him; 20 reached him. Computer teams played 29 through balls in 10 simulated matches (2.9 per match).
+
+### VC-47
+
+**Skill moves** — SWR-141 — PASS
+
+A defender kept on the ball for 0.35 s took it 27 times in 80 trials without a skill move and 0 times in 79 trials where the move started (1 did not start because control had not passed to the dribbler). Pressing O started a 0.38 s move with a 1.28 s cooldown, cost 0.030 stamina and carried the player 2.3 with the ball (still his: true); pressing again at once did nothing true. Computer dribblers made 193 skill moves in 10 matches (19.3 per match).
+
+### VC-48
+
+**Stamina** — SWR-142 — PASS
+
+5 s of sprinting used 0.024 stamina; 5 s of running 0.015. Standing still for 5 s recovered 0.006. Running speed at 20% stamina is 89% of a fresh player's. Half time took every player from 0.50 to at least 0.65. Average outfield stamina at full time over 10 simulated matches: 0.71.
+
+### VC-49
+
+**Substitutions** — SWR-143 — PASS
+
+Pause menu shows Substitutions true; it opens the panel true. Swapping a tired player for the first substitute put the new player on with full stamina true; 1 used, 4 left on the bench; announced "HAR SUBSTITUTION · ON M. Holm · OFF Z. Bonnet". After 5 substitutions every button is disabled true. Done returns to the pause menu true; in Watch mode the button is hidden true. Computer teams made 47 substitutions in 10 matches, at most 3 per team per match, the earliest at 60.2'.
+
+### VC-50
+
+**Name tag over the controlled player** — SWR-144 — PASS
+
+Tag shown true reading "9 FERRO" (expected "9 FERRO"), on screen true; stamina bar 42% for stamina 0.42. Hidden in Watch mode true.
 
 ## 5. Defects found and corrected during verification
 
