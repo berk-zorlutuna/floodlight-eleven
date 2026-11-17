@@ -1,11 +1,11 @@
 {
   "meta": {
-    "commit": "2403146",
-    "dirty": true,
-    "date": "2026-11-17 13:26 UTC",
+    "commit": "5563313",
+    "dirty": false,
+    "date": "2026-11-17 13:29 UTC",
     "browser": "153.0.8010.12",
     "os": "linux 6.18.44-fc-v553",
-    "secs": 58.128
+    "secs": 54.618
   },
   "seed": 20261117,
   "results": [
@@ -59,7 +59,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "3-minute match (L=180 s). Half time at 90.02 s of play = 45.01'. Clock moved in 0 of 897 steps with the ball out of play. Attacking directions 1/-1 → -1/1. First-half kick-off HAR, second-half kick-off NOR."
+      "evidence": "3-minute match (L=180 s). Half time at 90.02 s of play = 45.01'. Clock moved in 0 of 722 steps with the ball out of play. Attacking directions 1/-1 → -1/1. First-half kick-off HAR, second-half kick-off NOR."
     },
     {
       "id": "VC-06",
@@ -70,7 +70,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "Full time at 180.00 s of play (90'); full-time screen shown with 0–1 (expected 0–1) and \"Northvale take the derby. Cards: HAR 0Y 0R · NOR 1Y 1R\". Player sent off before full time: true. After PLAY AGAIN: score 0-0, squads 11/11 (22 players), cards 0/0, red markers 0, state kickoff."
+      "evidence": "Full time at 180.00 s of play (90'); full-time screen shown with 0–2 (expected 0–2) and \"Northvale take the derby. Cards: HAR 0Y 0R · NOR 0Y 1R\". Player sent off before full time: true. After PLAY AGAIN: score 0-0, squads 11/11 (22 players), cards 0/0, red markers 0, state kickoff."
     },
     {
       "id": "VC-07",
@@ -141,7 +141,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "From the front: 7/60 fouls (11.7%), 45 balls won. From behind: 36/60 fouls (60.0%), 18 balls won."
+      "evidence": "From the front: 6/60 fouls (10.0%), 38 balls won. From behind: 35/60 fouls (58.3%), 17 balls won."
     },
     {
       "id": "VC-14",
@@ -152,7 +152,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "#1: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.21 at the kick, taker pass ; #2: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.19 at the kick, taker pass ; #3: freekick to fouled team true, 0.00 from foul spot, nearest opponent 11.27 at the kick, taker pass ; #4: freekick to fouled team true, 0.00 from foul spot, nearest opponent 14.48 at the kick, taker pass ; #5: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.17 at the kick, taker pass ."
+      "evidence": "#1: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.23 at the kick, taker pass ; #2: freekick to fouled team true, 0.00 from foul spot, nearest opponent 11.30 at the kick, taker pass ; #3: freekick to fouled team true, 0.00 from foul spot, nearest opponent 14.84 at the kick, taker pass ; #4: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.24 at the kick, taker pass ; #5: freekick to fouled team true, 0.00 from foul spot, nearest opponent 9.17 at the kick, taker pass ."
     },
     {
       "id": "VC-15",
@@ -205,7 +205,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "aim z=-3: keeper 0.18 from the ball at the crossing, overshoot 0.18, caught; aim z=-2: keeper 0.04 from the ball at the crossing, overshoot 0.00, goal; aim z=-1: keeper 0.10 from the ball at the crossing, overshoot 0.73, parried; aim z=1: keeper 0.18 from the ball at the crossing, overshoot 0.72, parried; aim z=2: keeper 0.83 from the ball at the crossing, overshoot 0.00, parried; aim z=3: keeper 0.32 from the ball at the crossing, overshoot 0.32, parried. Shots at 24 from 18 out."
+      "evidence": "aim z=-3: keeper 0.47 from the ball at the crossing, overshoot 0.00, goal; aim z=-2: keeper 0.14 from the ball at the crossing, overshoot 0.18, parried; aim z=-1: keeper 0.27 from the ball at the crossing, overshoot 0.00, parried; aim z=1: keeper 0.23 from the ball at the crossing, overshoot 0.00, parried; aim z=2: keeper 0.20 from the ball at the crossing, overshoot 0.44, parried; aim z=3: keeper 0.67 from the ball at the crossing, overshoot 0.00, parried. Shots at 24 from 18 out."
     },
     {
       "id": "VC-20",
@@ -235,7 +235,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "Opponent 0.9 in front of the passer blocked 9 of 80 passes (11.3%)."
+      "evidence": "Opponent 0.9 in front of the passer blocked 12 of 80 passes (15.0%)."
     },
     {
       "id": "VC-23",
@@ -246,7 +246,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "From the front: 40 slides, ball won 37 (92.5%), fouls 3 (7.5%; 1 yellow, 0 red), carrier kept ball 0. From the side: 40 slides, ball won 39 (97.5%), fouls 1 (2.5%; 0 yellow, 0 red), carrier kept ball 0. From behind: 40 slides, ball won 0 (0.0%), fouls 40 (100.0%; 35 yellow, 2 red), carrier kept ball 0. Free slide: lasted 0.68 s, covered 3.14, recovery 0.40 s, second slide straight after: false. K while own team has the ball: slide false. K during an opponents' free kick: slide false."
+      "evidence": "From the front: 40 slides, ball won 37 (92.5%), fouls 3 (7.5%; 0 yellow, 0 red), carrier kept ball 0. From the side: 40 slides, ball won 38 (95.0%), fouls 2 (5.0%; 0 yellow, 0 red), carrier kept ball 0. From behind: 40 slides, ball won 0 (0.0%), fouls 40 (100.0%; 33 yellow, 6 red), carrier kept ball 0. Free slide: lasted 0.68 s, covered 3.14, recovery 0.40 s, second slide straight after: false. K while own team has the ball: slide false. K during an opponents' free kick: slide false."
     },
     {
       "id": "VC-24",
@@ -276,7 +276,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "Scoreboard shown true: HAR 0–0 NOR, clock 4' (expected 4'), 1ST HALF. Camera label true, mini-map true, key hints true when playing and false in Watch mode, power bar false when not shooting. Screenshot: docs/verification/hud-desktop.png."
+      "evidence": "Scoreboard shown true: HAR 0–0 NOR, clock 5' (expected 5'), 1ST HALF. Camera label true, mini-map true, key hints true when playing and false in Watch mode, power bar false when not shooting. Screenshot: docs/verification/hud-desktop.png."
     },
     {
       "id": "VC-27",
@@ -286,7 +286,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "P showed the pause screen true (\"Harbor City 0 – 0 Northvale · 0'\"); clock frozen for 1 s true. RESUME hid it true; the clock then advanced 2.58 s of play in 3 s of real time. Esc then \"Back to menu\" returned to the start menu true."
+      "evidence": "P showed the pause screen true (\"Harbor City 0 – 0 Northvale · 0'\"); clock frozen for 1 s true. RESUME hid it true; the clock then advanced 2.80 s of play in 3 s of real time. Esc then \"Back to menu\" returned to the start menu true."
     },
     {
       "id": "VC-28",
@@ -316,7 +316,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "3600 steps (60 s of match time) in 53 ms of CPU: 0.015 ms per step on the verification machine."
+      "evidence": "3600 steps (60 s of match time) in 54 ms of CPU: 0.015 ms per step on the verification machine."
     },
     {
       "id": "VC-31",
@@ -341,28 +341,28 @@
       "method": "A",
       "pass": true,
       "stats": {
-        "shots": 137,
-        "goals": 24,
-        "pass_gr": 691,
-        "recv_gr": 552,
-        "pass_lob": 639,
-        "recv_lob": 464,
+        "shots": 114,
+        "goals": 19,
+        "pass_gr": 685,
+        "recv_gr": 550,
+        "pass_lob": 663,
+        "recv_lob": 483,
         "upass_gr": 0,
         "urecv_gr": 0,
         "ulost_near": 0,
-        "slides": 42,
-        "through": 29,
-        "skills": 193,
-        "subs": 47,
-        "subsEarliest": 707.4900000001929,
-        "ftSta": 7.06145235112715,
-        "subsMaxTeam": 25,
-        "offs": 1,
-        "fouls": 20,
-        "yel": 8,
-        "reds": 2
+        "slides": 47,
+        "through": 30,
+        "skills": 106,
+        "subs": 31,
+        "subsEarliest": 690.7550000002261,
+        "ftSta": 6.847537787454029,
+        "subsMaxTeam": 19,
+        "offs": 3,
+        "fouls": 28,
+        "yel": 12,
+        "reds": 1
       },
-      "evidence": "10 matches of 5 minutes, both teams computer-controlled. Shots 137, goals 24: conversion 17.5% (2.4 goals per match). Ground passes received 552/691 (79.9%). Lofted passes received 464/639 (72.6%). Per match: sliding tackles 4.2, offsides 0.1, fouls 2.0, yellow cards 0.8, red cards 0.20."
+      "evidence": "10 matches of 5 minutes, both teams computer-controlled. Shots 114, goals 19: conversion 16.7% (1.9 goals per match). Ground passes received 550/685 (80.3%). Lofted passes received 483/663 (72.9%). Per match: sliding tackles 4.7, offsides 0.3, fouls 2.8, yellow cards 1.2, red cards 0.10."
     },
     {
       "id": "VC-33",
@@ -373,28 +373,28 @@
       "method": "A",
       "pass": true,
       "stats": {
-        "shots": 41,
-        "goals": 12,
-        "pass_gr": 145,
-        "recv_gr": 126,
-        "pass_lob": 68,
-        "recv_lob": 48,
-        "upass_gr": 76,
-        "urecv_gr": 66,
-        "ulost_near": 0,
-        "slides": 10,
-        "through": 18,
-        "skills": 17,
-        "subs": 5,
-        "subsEarliest": 550.4750000000563,
-        "ftSta": 5.430695235687774,
-        "subsMaxTeam": 5,
-        "offs": 0,
-        "fouls": 7,
+        "shots": 52,
+        "goals": 5,
+        "pass_gr": 165,
+        "recv_gr": 143,
+        "pass_lob": 80,
+        "recv_lob": 52,
+        "upass_gr": 111,
+        "urecv_gr": 96,
+        "ulost_near": 3,
+        "slides": 11,
+        "through": 16,
+        "skills": 15,
+        "subs": 2,
+        "subsEarliest": 569.6200000000271,
+        "ftSta": 4.909072474231511,
+        "subsMaxTeam": 2,
+        "offs": 1,
+        "fouls": 4,
         "yel": 2,
-        "reds": 1
+        "reds": 0
       },
-      "evidence": "6 matches of 5 minutes as Harbor City. The scripted user dribbles toward goal, passes with J every 0.7–1.7 s and keeps holding the forward key for 0.5 s after each pass. User ground passes received 66/76 (86.8%); 0 lost by the receiver within 1.5 of the ball, the rest intercepted on the way."
+      "evidence": "6 matches of 5 minutes as Harbor City. The scripted user dribbles toward goal, passes with J every 0.7–1.7 s and keeps holding the forward key for 0.5 s after each pass. User ground passes received 96/111 (86.5%); 3 lost by the receiver within 1.5 of the ball, the rest intercepted on the way."
     },
     {
       "id": "VC-34",
@@ -426,7 +426,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "14 matchdays of 4 matches with all 8 clubs each time: true; 56 distinct home-and-away pairings (8 × 7 = 56). Event order LLLC0LLLLC1LLLLC2LLL (L league, C0–C2 cup rounds). After 13 simulated matchdays: every club has 13 played with W+D+L = 13, goals for = goals against overall, table sorted by points, goal difference, goals: true. Cup: quarter-finals 4, semi-finals 2, final 1, winner set, every winner consistent with score or penalties: true (2 ties went to penalties). Final matchday led to the end-of-season screen true; history has 1 season; now season 2."
+      "evidence": "14 matchdays of 4 matches with all 8 clubs each time: true; 56 distinct home-and-away pairings (8 × 7 = 56). Event order LLLC0LLLLC1LLLLC2LLL (L league, C0–C2 cup rounds). After 13 simulated matchdays: every club has 13 played with W+D+L = 13, goals for = goals against overall, table sorted by points, goal difference, goals: true. Cup: quarter-finals 4, semi-finals 2, final 1, winner set, every winner consistent with score or penalties: true (1 ties went to penalties). Final matchday led to the end-of-season screen true; history has 1 season; now season 2."
     },
     {
       "id": "VC-37",
@@ -458,7 +458,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "W (away, 3 scored): Win bonus +150, Goals scored (3) +45; total 195, coins +195. D (home, 2 scored): Draw bonus +70, Goals scored (2) +30, Gate receipts, 1,299 fans +32; total 132, coins +132. L (away, 0 scored): Appearance fee +30, Goals scored (0) +0; total 30, coins +30."
+      "evidence": "W (away, 3 scored): Win bonus +150, Goals scored (3) +45; total 195, coins +195. D (home, 2 scored): Draw bonus +70, Goals scored (2) +30, Gate receipts, 1,445 fans +36; total 136, coins +136. L (away, 0 scored): Appearance fee +30, Goals scored (0) +0; total 30, coins +30."
     },
     {
       "id": "VC-40",
@@ -479,7 +479,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "Squad of 18: attributes 15–99, overall = position-weighted sum, potential ≥ overall, names, ages and numbers present: true; shirt numbers unique true. Rated 90 v 50 for pace, run speed 7.31 v 6.21 m/s. Passing 95 v 40: mean sideways miss over 25 m 0.14 v 0.59 m. Shooting 95 v 40: share of shots from 20 m on target 0.92 v 0.77. Defending 95 v 35 against a 70 dribbler: standing tackles won 0.87 v 0.62. Goalkeeping 95 v 40: shots saved or parried 0.97 v 0.80. Stamina 95 v 40: stamina used in 5 s of sprinting 0.017 v 0.027."
+      "evidence": "Squad of 18: attributes 15–99, overall = position-weighted sum, potential ≥ overall, names, ages and numbers present: true; shirt numbers unique true. Rated 90 v 50 for pace, run speed 7.31 v 6.21 m/s. Passing 95 v 40: mean sideways miss over 25 m 0.12 v 0.64 m. Shooting 95 v 40: share of shots from 20 m on target 0.89 v 0.72. Defending 95 v 35 against a 70 dribbler: standing tackles won 0.87 v 0.57. Goalkeeping 95 v 40: shots saved or parried 0.95 v 0.65. Stamina 95 v 40: stamina used in 5 s of sprinting 0.019 v 0.030."
     },
     {
       "id": "VC-42",
@@ -499,7 +499,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "Market lists 19 players, priced by rating and age true. With 0 coins every paid player's Buy is disabled true. Buying the first player for 315 coins took the coins and added him to the squad and line-up true. At 25 players Buy is disabled true. Selling returned 60% of value (78 coins) and removed him true. At 16 players every Sell is disabled and the eleven is still complete true. After one match the market had new players true."
+      "evidence": "Market lists 19 players, priced by rating and age true. With 0 coins every paid player's Buy is disabled true. Buying the first player for 355 coins took the coins and added him to the squad and line-up true. At 25 players Buy is disabled true. Selling returned 60% of value (75 coins) and removed him true. At 16 players every Sell is disabled and the eleven is still complete true. After one match the market had new players true."
     },
     {
       "id": "VC-44",
@@ -509,7 +509,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "Across 12 simulated matches, 5 starters improved their overall rating. At the end of the season every remaining player is a year older true; three 20-year-olds with room to grow all improved true; three 32-year-olds all declined true; 2 of five 36-year-olds retired; 2 17-year-old youth players joined, leaving 18 players. The season report lists the retirements and youth players true, and the new line-up is complete with a keeper in goal true."
+      "evidence": "Across 12 simulated matches, 4 starters improved their overall rating. At the end of the season every remaining player is a year older true; three 20-year-olds with room to grow all improved true; three 32-year-olds all declined true; 2 of five 36-year-olds retired; 2 17-year-old youth players joined, leaving 18 players. The season report lists the retirements and youth players true, and the new line-up is complete with a keeper in goal true."
     },
     {
       "id": "VC-45",
@@ -529,7 +529,7 @@
       ],
       "method": "T, A",
       "pass": true,
-      "evidence": "20 trials: I played 20 passes, 20 flagged as through balls to the runner; 20 sent into space at least 2 ahead of him; 20 reached him. Computer teams played 29 through balls in 10 simulated matches (2.9 per match)."
+      "evidence": "20 trials: I played 20 passes, 20 flagged as through balls to the runner; 20 sent into space at least 2 ahead of him; 20 reached him. Computer teams played 30 through balls in 10 simulated matches (3.0 per match)."
     },
     {
       "id": "VC-47",
@@ -539,7 +539,7 @@
       ],
       "method": "T, A",
       "pass": true,
-      "evidence": "A defender kept on the ball for 0.35 s took it 27 times in 80 trials without a skill move and 0 times in 79 trials where the move started (1 did not start because control had not passed to the dribbler). Pressing O started a 0.38 s move with a 1.28 s cooldown, cost 0.030 stamina and carried the player 2.3 with the ball (still his: true); pressing again at once did nothing true. Computer dribblers made 193 skill moves in 10 matches (19.3 per match)."
+      "evidence": "A defender kept on the ball for 0.35 s took it 29 times in 80 trials without a skill move and 0 times in 76 trials where the move started (4 did not start because control had not passed to the dribbler). Pressing O started a 0.38 s move with a 1.28 s cooldown, cost 0.030 stamina and carried the player 2.3 with the ball (still his: true); pressing again at once did nothing true. Computer dribblers made 106 skill moves in 10 matches (10.6 per match)."
     },
     {
       "id": "VC-48",
@@ -549,7 +549,7 @@
       ],
       "method": "T, A",
       "pass": true,
-      "evidence": "5 s of sprinting used 0.024 stamina; 5 s of running 0.015. Standing still for 5 s recovered 0.006. Running speed at 20% stamina is 89% of a fresh player's. Half time took every player from 0.50 to at least 0.65. Average outfield stamina at full time over 10 simulated matches: 0.71."
+      "evidence": "5 s of sprinting used 0.024 stamina; 5 s of running 0.015. Standing still for 5 s recovered 0.006. Running speed at 20% stamina is 89% of a fresh player's. Half time took every player from 0.50 to at least 0.65. Average outfield stamina at full time over 10 simulated matches: 0.68."
     },
     {
       "id": "VC-49",
@@ -559,7 +559,7 @@
       ],
       "method": "T, A",
       "pass": true,
-      "evidence": "Pause menu shows Substitutions true; it opens the panel true. Swapping a tired player for the first substitute put the new player on with full stamina true; 1 used, 4 left on the bench; announced \"HAR SUBSTITUTION · ON M. Holm · OFF Z. Bonnet\". After 5 substitutions every button is disabled true. Done returns to the pause menu true; in Watch mode the button is hidden true. Computer teams made 47 substitutions in 10 matches, at most 3 per team per match, the earliest at 60.2'."
+      "evidence": "Pause menu shows Substitutions true; it opens the panel true. Swapping a tired player for the first substitute put the new player on with full stamina true; 1 used, 4 left on the bench; announced \"HAR SUBSTITUTION · ON M. Holm · OFF Z. Bonnet\". After 5 substitutions every button is disabled true. Done returns to the pause menu true; in Watch mode the button is hidden true. Computer teams made 31 substitutions in 10 matches, at most 3 per team per match, the earliest at 61.6'."
     },
     {
       "id": "VC-50",
