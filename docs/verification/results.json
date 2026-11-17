@@ -1,11 +1,11 @@
 {
   "meta": {
-    "commit": "5563313",
+    "commit": "dfc1a94",
     "dirty": false,
-    "date": "2026-11-17 13:29 UTC",
+    "date": "2026-11-17 13:31 UTC",
     "browser": "153.0.8010.12",
     "os": "linux 6.18.44-fc-v553",
-    "secs": 54.618
+    "secs": 54.744
   },
   "seed": 20261117,
   "results": [
@@ -276,7 +276,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "Scoreboard shown true: HAR 0–0 NOR, clock 5' (expected 5'), 1ST HALF. Camera label true, mini-map true, key hints true when playing and false in Watch mode, power bar false when not shooting. Screenshot: docs/verification/hud-desktop.png."
+      "evidence": "Scoreboard shown true: HAR 0–0 NOR, clock 4' (expected 4'), 1ST HALF. Camera label true, mini-map true, key hints true when playing and false in Watch mode, power bar false when not shooting. Screenshot: docs/verification/hud-desktop.png."
     },
     {
       "id": "VC-27",
@@ -286,7 +286,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "P showed the pause screen true (\"Harbor City 0 – 0 Northvale · 0'\"); clock frozen for 1 s true. RESUME hid it true; the clock then advanced 2.80 s of play in 3 s of real time. Esc then \"Back to menu\" returned to the start menu true."
+      "evidence": "P showed the pause screen true (\"Harbor City 0 – 0 Northvale · 0'\"); clock frozen for 1 s true. RESUME hid it true; the clock then advanced 2.68 s of play in 3 s of real time. Esc then \"Back to menu\" returned to the start menu true."
     },
     {
       "id": "VC-28",
@@ -316,7 +316,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "3600 steps (60 s of match time) in 54 ms of CPU: 0.015 ms per step on the verification machine."
+      "evidence": "3600 steps (60 s of match time) in 89 ms of CPU: 0.025 ms per step on the verification machine."
     },
     {
       "id": "VC-31",
@@ -341,28 +341,28 @@
       "method": "A",
       "pass": true,
       "stats": {
-        "shots": 114,
-        "goals": 19,
-        "pass_gr": 685,
-        "recv_gr": 550,
-        "pass_lob": 663,
-        "recv_lob": 483,
+        "shots": 121,
+        "goals": 27,
+        "pass_gr": 653,
+        "recv_gr": 525,
+        "pass_lob": 655,
+        "recv_lob": 496,
         "upass_gr": 0,
         "urecv_gr": 0,
         "ulost_near": 0,
-        "slides": 47,
+        "slides": 56,
         "through": 30,
-        "skills": 106,
-        "subs": 31,
-        "subsEarliest": 690.7550000002261,
-        "ftSta": 6.847537787454029,
-        "subsMaxTeam": 19,
+        "skills": 116,
+        "subs": 55,
+        "subsEarliest": 704.3000000002298,
+        "ftSta": 7.4219431367284345,
+        "subsMaxTeam": 29,
         "offs": 3,
-        "fouls": 28,
-        "yel": 12,
-        "reds": 1
+        "fouls": 31,
+        "yel": 9,
+        "reds": 3
       },
-      "evidence": "10 matches of 5 minutes, both teams computer-controlled. Shots 114, goals 19: conversion 16.7% (1.9 goals per match). Ground passes received 550/685 (80.3%). Lofted passes received 483/663 (72.9%). Per match: sliding tackles 4.7, offsides 0.3, fouls 2.8, yellow cards 1.2, red cards 0.10."
+      "evidence": "10 matches of 5 minutes, both teams computer-controlled. Shots 121, goals 27: conversion 22.3% (2.7 goals per match). Ground passes received 525/653 (80.4%). Lofted passes received 496/655 (75.7%). Per match: sliding tackles 5.6, offsides 0.3, fouls 3.1, yellow cards 0.9, red cards 0.30."
     },
     {
       "id": "VC-33",
@@ -373,28 +373,28 @@
       "method": "A",
       "pass": true,
       "stats": {
-        "shots": 52,
-        "goals": 5,
-        "pass_gr": 165,
-        "recv_gr": 143,
-        "pass_lob": 80,
-        "recv_lob": 52,
-        "upass_gr": 111,
-        "urecv_gr": 96,
-        "ulost_near": 3,
-        "slides": 11,
-        "through": 16,
-        "skills": 15,
+        "shots": 47,
+        "goals": 7,
+        "pass_gr": 151,
+        "recv_gr": 126,
+        "pass_lob": 76,
+        "recv_lob": 60,
+        "upass_gr": 102,
+        "urecv_gr": 95,
+        "ulost_near": 2,
+        "slides": 9,
+        "through": 26,
+        "skills": 12,
         "subs": 2,
-        "subsEarliest": 569.6200000000271,
-        "ftSta": 4.909072474231511,
+        "subsEarliest": 576.8950000000241,
+        "ftSta": 5.391731064472929,
         "subsMaxTeam": 2,
         "offs": 1,
-        "fouls": 4,
+        "fouls": 7,
         "yel": 2,
         "reds": 0
       },
-      "evidence": "6 matches of 5 minutes as Harbor City. The scripted user dribbles toward goal, passes with J every 0.7–1.7 s and keeps holding the forward key for 0.5 s after each pass. User ground passes received 96/111 (86.5%); 3 lost by the receiver within 1.5 of the ball, the rest intercepted on the way."
+      "evidence": "6 matches of 5 minutes as Harbor City. The scripted user dribbles toward goal, passes with J every 0.7–1.7 s and keeps holding the forward key for 0.5 s after each pass. User ground passes received 95/102 (93.1%); 2 lost by the receiver within 1.5 of the ball, the rest intercepted on the way."
     },
     {
       "id": "VC-34",
@@ -458,7 +458,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "W (away, 3 scored): Win bonus +150, Goals scored (3) +45; total 195, coins +195. D (home, 2 scored): Draw bonus +70, Goals scored (2) +30, Gate receipts, 1,445 fans +36; total 136, coins +136. L (away, 0 scored): Appearance fee +30, Goals scored (0) +0; total 30, coins +30."
+      "evidence": "W (away, 3 scored): Win bonus +150, Goals scored (3) +45; total 195, coins +195. D (home, 2 scored): Draw bonus +70, Goals scored (2) +30, Gate receipts, 1,315 fans +33; total 133, coins +133. L (away, 0 scored): Appearance fee +30, Goals scored (0) +0; total 30, coins +30."
     },
     {
       "id": "VC-40",
@@ -468,7 +468,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "Before reload: {\"name\":\"Saved FC\",\"coins\":6190,\"ev\":2,\"squad\":19,\"P\":2}. After reloading the page and opening Career: {\"name\":\"Saved FC\",\"coins\":6190,\"ev\":2,\"squad\":19,\"P\":2,\"hub\":\"Saved FC\"} (identical true). Export downloaded \"floodlight-eleven-flt-season1.json\" with club \"Saved FC\" and 6190 coins. Delete (confirmed): career cleared true, storage entry removed true, create screen shown true. Importing the exported file restored \"Saved FC\" with 6190 coins (\"Save imported.\"). Importing an unrelated JSON file was refused (\"That file is not a Floodlight Eleven career save.\") and kept the career."
+      "evidence": "Before reload: {\"name\":\"Saved FC\",\"coins\":5822,\"ev\":2,\"squad\":19,\"P\":2}. After reloading the page and opening Career: {\"name\":\"Saved FC\",\"coins\":5822,\"ev\":2,\"squad\":19,\"P\":2,\"hub\":\"Saved FC\"} (identical true). Export downloaded \"floodlight-eleven-flt-season1.json\" with club \"Saved FC\" and 5822 coins. Delete (confirmed): career cleared true, storage entry removed true, create screen shown true. Importing the exported file restored \"Saved FC\" with 5822 coins (\"Save imported.\"). Importing an unrelated JSON file was refused (\"That file is not a Floodlight Eleven career save.\") and kept the career."
     },
     {
       "id": "VC-41",
@@ -479,7 +479,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "Squad of 18: attributes 15–99, overall = position-weighted sum, potential ≥ overall, names, ages and numbers present: true; shirt numbers unique true. Rated 90 v 50 for pace, run speed 7.31 v 6.21 m/s. Passing 95 v 40: mean sideways miss over 25 m 0.12 v 0.64 m. Shooting 95 v 40: share of shots from 20 m on target 0.89 v 0.72. Defending 95 v 35 against a 70 dribbler: standing tackles won 0.87 v 0.57. Goalkeeping 95 v 40: shots saved or parried 0.95 v 0.65. Stamina 95 v 40: stamina used in 5 s of sprinting 0.019 v 0.030."
+      "evidence": "Squad of 18: attributes 15–99, overall = position-weighted sum, potential ≥ overall, names, ages and numbers present: true; shirt numbers unique true. Rated 90 v 50 for pace, run speed 7.31 v 6.21 m/s. Passing 95 v 40: mean sideways miss over 25 m 0.12 v 0.61 m. Shooting 95 v 40: share of shots from 20 m on target 0.97 v 0.79. Defending 95 v 35 against a 70 dribbler: standing tackles won 0.93 v 0.47. Goalkeeping 95 v 40: shots saved or parried 0.95 v 0.83. Stamina 95 v 40: stamina used in 5 s of sprinting 0.019 v 0.030."
     },
     {
       "id": "VC-42",
@@ -499,7 +499,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "Market lists 19 players, priced by rating and age true. With 0 coins every paid player's Buy is disabled true. Buying the first player for 355 coins took the coins and added him to the squad and line-up true. At 25 players Buy is disabled true. Selling returned 60% of value (75 coins) and removed him true. At 16 players every Sell is disabled and the eleven is still complete true. After one match the market had new players true."
+      "evidence": "Market lists 19 players, priced by rating and age true. With 0 coins every paid player's Buy is disabled true. Buying the first player for 310 coins took the coins and added him to the squad and line-up true. At 25 players Buy is disabled true. Selling returned 60% of value (117 coins) and removed him true. At 16 players every Sell is disabled and the eleven is still complete true. After one match the market had new players true."
     },
     {
       "id": "VC-44",
@@ -509,7 +509,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "Across 12 simulated matches, 4 starters improved their overall rating. At the end of the season every remaining player is a year older true; three 20-year-olds with room to grow all improved true; three 32-year-olds all declined true; 2 of five 36-year-olds retired; 2 17-year-old youth players joined, leaving 18 players. The season report lists the retirements and youth players true, and the new line-up is complete with a keeper in goal true."
+      "evidence": "Across 12 simulated matches, 3 starters improved their overall rating. At the end of the season every remaining player is a year older true; three 20-year-olds with room to grow all improved true; three 32-year-olds all declined true; 2 of five 36-year-olds retired; 2 17-year-old youth players joined, leaving 18 players. The season report lists the retirements and youth players true, and the new line-up is complete with a keeper in goal true."
     },
     {
       "id": "VC-45",
@@ -539,7 +539,7 @@
       ],
       "method": "T, A",
       "pass": true,
-      "evidence": "A defender kept on the ball for 0.35 s took it 29 times in 80 trials without a skill move and 0 times in 76 trials where the move started (4 did not start because control had not passed to the dribbler). Pressing O started a 0.38 s move with a 1.28 s cooldown, cost 0.030 stamina and carried the player 2.3 with the ball (still his: true); pressing again at once did nothing true. Computer dribblers made 106 skill moves in 10 matches (10.6 per match)."
+      "evidence": "A defender kept on the ball for 0.35 s took it 27 times in 80 trials without a skill move and 0 times in 79 trials where the move started (1 did not start because control had not passed to the dribbler). Pressing O started a 0.38 s move with a 1.28 s cooldown, cost 0.030 stamina and carried the player 2.3 with the ball (still his: true); pressing again at once did nothing true. Computer dribblers made 116 skill moves in 10 matches (11.6 per match)."
     },
     {
       "id": "VC-48",
@@ -549,7 +549,7 @@
       ],
       "method": "T, A",
       "pass": true,
-      "evidence": "5 s of sprinting used 0.024 stamina; 5 s of running 0.015. Standing still for 5 s recovered 0.006. Running speed at 20% stamina is 89% of a fresh player's. Half time took every player from 0.50 to at least 0.65. Average outfield stamina at full time over 10 simulated matches: 0.68."
+      "evidence": "5 s of sprinting used 0.024 stamina; 5 s of running 0.015. Standing still for 5 s recovered 0.006. Running speed at 20% stamina is 89% of a fresh player's. Half time took every player from 0.50 to at least 0.65. Average outfield stamina at full time over 10 simulated matches: 0.74."
     },
     {
       "id": "VC-49",
@@ -559,7 +559,7 @@
       ],
       "method": "T, A",
       "pass": true,
-      "evidence": "Pause menu shows Substitutions true; it opens the panel true. Swapping a tired player for the first substitute put the new player on with full stamina true; 1 used, 4 left on the bench; announced \"HAR SUBSTITUTION · ON M. Holm · OFF Z. Bonnet\". After 5 substitutions every button is disabled true. Done returns to the pause menu true; in Watch mode the button is hidden true. Computer teams made 31 substitutions in 10 matches, at most 3 per team per match, the earliest at 61.6'."
+      "evidence": "Pause menu shows Substitutions true; it opens the panel true. Swapping a tired player for the first substitute put the new player on with full stamina true; 1 used, 4 left on the bench; announced \"HAR SUBSTITUTION · ON M. Holm · OFF Z. Bonnet\". After 5 substitutions every button is disabled true. Done returns to the pause menu true; in Watch mode the button is hidden true. Computer teams made 55 substitutions in 10 matches, at most 3 per team per match, the earliest at 63.3'."
     },
     {
       "id": "VC-50",
