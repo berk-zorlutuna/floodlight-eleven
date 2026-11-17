@@ -1753,6 +1753,19 @@ function renderCareer(){
   const el=$('careerBody');
   el.innerHTML=!career?renderCreate():cv.result?renderResult():cv.season?renderSeason():renderHub();
 }
+// export: through the claude.ai viewer's download prompt when the page runs there, otherwise an ordinary file download
+let downloadsNs;
+async function exportCareer(){
+  const name=`floodlight-eleven-${career.club.short.toLowerCase()}-season${career.season}.json`,data=JSON.stringify(career,null,1);
+  if(downloadsNs===undefined)downloadsNs=window.claude&&window.claude.use?await window.claude.use('downloads').catch(()=>null):null;
+  if(downloadsNs){
+    try{await downloadsNs.save({filename:name,data});cv.msg='Save exported.';}
+    catch(e){cv.msg=e&&e.code==='declined'?'Export cancelled.':'Export is not available here.';}
+    renderCareer();return;
+  }
+  const url=URL.createObjectURL(new Blob([data],{type:'application/json'})),l=document.createElement('a');
+  l.href=url;l.download=name;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
 function careerTarget(){return career?career.club:cv.draft;}
 $('careerBody').addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,v=b.dataset.v;
@@ -1772,7 +1785,7 @@ $('careerBody').addEventListener('click',e=>{
     case 'buy':buy(+b.dataset.i);break;
     case 'sell':sell(b.dataset.id);break;
     case 'upgrade':upgradeStadium();break;
-    case 'export':{const url=URL.createObjectURL(new Blob([JSON.stringify(career,null,1)],{type:'application/json'}));const l=document.createElement('a');l.href=url;l.download=`floodlight-eleven-${career.club.short.toLowerCase()}-season${career.season}.json`;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);return;}
+    case 'export':exportCareer();return;
     case 'import':$('importFile').click();return;
     case 'delete':if(confirm('Delete this career? This cannot be undone.')){career=null;cv.draft=null;cv.result=cv.season=null;saveCareer();}break;
     case 'ack-result':cv.result=null;break;
