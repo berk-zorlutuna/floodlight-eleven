@@ -22,16 +22,20 @@ Then open <http://localhost:8765/floodlight-eleven.html>.
 | Shift | Sprint |
 | J or Z | Pass in the held direction; tackle without the ball (mistimed tackles and tackles from behind risk a foul and a card) |
 | K or X (hold) | Charge and release to shoot; hold up or down to pick a corner |
+| K or X (defending) | Sliding tackle when the other side has the ball; from behind it is usually a foul |
 | L or C | Lofted pass or cross |
 | Space or Q | Switch to the player nearest the ball |
 | V / M / P | Camera angle / sound / pause |
 
-On a phone there is an on-screen joystick and buttons. Hold the phone sideways.
+On a phone there is an on-screen joystick and buttons; the SHOOT button becomes SLIDE while defending. Hold the phone sideways.
+
+When a pass is played to you, your player runs onto the ball by himself; push the stick firmly away from the ball to break off.
 
 ## Features
 
 - Computer-controlled teammates and opponents that hold shape, press, pass, cross and shoot
 - Goalkeepers that position, dive, catch and parry
+- Sliding tackles for you and the computer defenders
 - Ball physics with bounces, rolling friction, posts and crossbar
 - Throw-ins, corners, goal kicks, kick-offs, half time and full time
 - Offside, judged at the moment of the pass and flagged when the offside player receives the ball
