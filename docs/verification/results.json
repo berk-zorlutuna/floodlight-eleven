@@ -1,11 +1,11 @@
 {
   "meta": {
-    "commit": "9713330",
-    "dirty": true,
-    "date": "2026-11-17 12:10 UTC",
+    "commit": "eab8d69",
+    "dirty": false,
+    "date": "2026-11-17 12:11 UTC",
     "browser": "153.0.8010.12",
     "os": "linux 6.18.44-fc-v553",
-    "secs": 50.801
+    "secs": 48.541
   },
   "seed": 20261117,
   "results": [
@@ -276,7 +276,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "Scoreboard shown true: HAR 0–1 NOR, clock 3' (expected 3'), 1ST HALF. Camera label true, mini-map true, key hints true when playing and false in Watch mode, power bar false when not shooting. Screenshot: docs/verification/hud-desktop.png."
+      "evidence": "Scoreboard shown true: HAR 0–0 NOR, clock 5' (expected 5'), 1ST HALF. Camera label true, mini-map true, key hints true when playing and false in Watch mode, power bar false when not shooting. Screenshot: docs/verification/hud-desktop.png."
     },
     {
       "id": "VC-27",
@@ -286,7 +286,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "P showed the pause screen true (\"Harbor City 0 – 0 Northvale · 0'\"); clock frozen for 1 s true. RESUME hid it true; the clock then advanced 2.25 s of play in 3 s of real time. Esc then \"Back to menu\" returned to the start menu true."
+      "evidence": "P showed the pause screen true (\"Harbor City 0 – 0 Northvale · 0'\"); clock frozen for 1 s true. RESUME hid it true; the clock then advanced 2.58 s of play in 3 s of real time. Esc then \"Back to menu\" returned to the start menu true."
     },
     {
       "id": "VC-28",
@@ -316,7 +316,7 @@
       ],
       "method": "T",
       "pass": true,
-      "evidence": "3600 steps (60 s of match time) in 87 ms of CPU: 0.024 ms per step on the verification machine."
+      "evidence": "3600 steps (60 s of match time) in 59 ms of CPU: 0.016 ms per step on the verification machine."
     },
     {
       "id": "VC-31",
@@ -341,22 +341,22 @@
       "method": "A",
       "pass": true,
       "stats": {
-        "shots": 113,
+        "shots": 109,
         "goals": 19,
-        "pass_gr": 694,
-        "recv_gr": 572,
-        "pass_lob": 652,
-        "recv_lob": 483,
+        "pass_gr": 684,
+        "recv_gr": 545,
+        "pass_lob": 680,
+        "recv_lob": 509,
         "upass_gr": 0,
         "urecv_gr": 0,
         "ulost_near": 0,
         "slides": 40,
-        "offs": 4,
-        "fouls": 33,
-        "yel": 14,
-        "reds": 2
+        "offs": 1,
+        "fouls": 24,
+        "yel": 10,
+        "reds": 0
       },
-      "evidence": "10 matches of 5 minutes, both teams computer-controlled. Shots 113, goals 19: conversion 16.8% (1.9 goals per match). Ground passes received 572/694 (82.4%). Lofted passes received 483/652 (74.1%). Per match: sliding tackles 4.0, offsides 0.4, fouls 3.3, yellow cards 1.4, red cards 0.20."
+      "evidence": "10 matches of 5 minutes, both teams computer-controlled. Shots 109, goals 19: conversion 17.4% (1.9 goals per match). Ground passes received 545/684 (79.7%). Lofted passes received 509/680 (74.9%). Per match: sliding tackles 4.0, offsides 0.1, fouls 2.4, yellow cards 1.0, red cards 0.00."
     },
     {
       "id": "VC-33",
@@ -367,22 +367,22 @@
       "method": "A",
       "pass": true,
       "stats": {
-        "shots": 48,
-        "goals": 4,
-        "pass_gr": 160,
-        "recv_gr": 140,
-        "pass_lob": 103,
-        "recv_lob": 70,
-        "upass_gr": 114,
-        "urecv_gr": 101,
-        "ulost_near": 1,
-        "slides": 13,
-        "offs": 2,
-        "fouls": 11,
-        "yel": 6,
+        "shots": 37,
+        "goals": 5,
+        "pass_gr": 149,
+        "recv_gr": 132,
+        "pass_lob": 94,
+        "recv_lob": 61,
+        "upass_gr": 111,
+        "urecv_gr": 103,
+        "ulost_near": 0,
+        "slides": 9,
+        "offs": 1,
+        "fouls": 9,
+        "yel": 3,
         "reds": 0
       },
-      "evidence": "6 matches of 5 minutes as Harbor City. The scripted user dribbles toward goal, passes with J every 0.7–1.7 s and keeps holding the forward key for 0.5 s after each pass. User ground passes received 101/114 (88.6%); 1 lost by the receiver within 1.5 of the ball, the rest intercepted on the way."
+      "evidence": "6 matches of 5 minutes as Harbor City. The scripted user dribbles toward goal, passes with J every 0.7–1.7 s and keeps holding the forward key for 0.5 s after each pass. User ground passes received 103/111 (92.8%); 0 lost by the receiver within 1.5 of the ball, the rest intercepted on the way."
     },
     {
       "id": "VC-34",

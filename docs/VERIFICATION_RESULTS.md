@@ -3,12 +3,12 @@
 | | |
 | --- | --- |
 | Document | Software Verification Results |
-| Software under test | `floodlight-eleven.html` at commit `9713330` plus uncommitted changes |
-| Run | 2026-11-17 12:10 UTC |
+| Software under test | `floodlight-eleven.html` at commit `eab8d69` |
+| Run | 2026-11-17 12:11 UTC |
 | Procedure | [Verification Cases](VERIFICATION_CASES.md), executed by `tests/verify.js` |
 | Environment | Headless Chromium 153.0.8010.12, Node v22.23.4, linux 6.18.44-fc-v553; three.js r128 served from the local npm package; web fonts blocked |
 | Random seed | 20261117 (`Math.random` is seeded, so a rerun on the same code gives the same results) |
-| Duration | 51 s |
+| Duration | 49 s |
 
 ## 1. Summary
 
@@ -254,13 +254,13 @@ Emulated phone 844 × 390 with touch (coarse pointer true). Touch controls shown
 
 **Heads-up display** — SWR-092 — PASS
 
-Scoreboard shown true: HAR 0–1 NOR, clock 3' (expected 3'), 1ST HALF. Camera label true, mini-map true, key hints true when playing and false in Watch mode, power bar false when not shooting. Screenshot: docs/verification/hud-desktop.png.
+Scoreboard shown true: HAR 0–0 NOR, clock 5' (expected 5'), 1ST HALF. Camera label true, mini-map true, key hints true when playing and false in Watch mode, power bar false when not shooting. Screenshot: docs/verification/hud-desktop.png.
 
 ### VC-27
 
 **Pause, resume, back to menu** — SWR-093 — PASS
 
-P showed the pause screen true ("Harbor City 0 – 0 Northvale · 0'"); clock frozen for 1 s true. RESUME hid it true; the clock then advanced 2.25 s of play in 3 s of real time. Esc then "Back to menu" returned to the start menu true.
+P showed the pause screen true ("Harbor City 0 – 0 Northvale · 0'"); clock frozen for 1 s true. RESUME hid it true; the clock then advanced 2.58 s of play in 3 s of real time. Esc then "Back to menu" returned to the start menu true.
 
 ### VC-28
 
@@ -278,7 +278,7 @@ Audio contexts before KICK OFF 0, after 1. Oscillators (whistle) 0 → 2 at kick
 
 **Simulation step cost** — SWR-100 — PASS
 
-3600 steps (60 s of match time) in 87 ms of CPU: 0.024 ms per step on the verification machine.
+3600 steps (60 s of match time) in 59 ms of CPU: 0.016 ms per step on the verification machine.
 
 ### VC-31
 
@@ -290,13 +290,13 @@ Manual demonstration: play a 5-minute match on a computer with a hardware GPU an
 
 **Simulated computer-vs-computer matches** — SWR-032, SWR-061, SWR-073, SWR-082 — PASS
 
-10 matches of 5 minutes, both teams computer-controlled. Shots 113, goals 19: conversion 16.8% (1.9 goals per match). Ground passes received 572/694 (82.4%). Lofted passes received 483/652 (74.1%). Per match: sliding tackles 4.0, offsides 0.4, fouls 3.3, yellow cards 1.4, red cards 0.20.
+10 matches of 5 minutes, both teams computer-controlled. Shots 109, goals 19: conversion 17.4% (1.9 goals per match). Ground passes received 545/684 (79.7%). Lofted passes received 509/680 (74.9%). Per match: sliding tackles 4.0, offsides 0.1, fouls 2.4, yellow cards 1.0, red cards 0.00.
 
 ### VC-33
 
 **Scripted-user pass completion** — SWR-073 — PASS
 
-6 matches of 5 minutes as Harbor City. The scripted user dribbles toward goal, passes with J every 0.7–1.7 s and keeps holding the forward key for 0.5 s after each pass. User ground passes received 101/114 (88.6%); 1 lost by the receiver within 1.5 of the ball, the rest intercepted on the way.
+6 matches of 5 minutes as Harbor City. The scripted user dribbles toward goal, passes with J every 0.7–1.7 s and keeps holding the forward key for 0.5 s after each pass. User ground passes received 103/111 (92.8%); 0 lost by the receiver within 1.5 of the ball, the rest intercepted on the way.
 
 ### VC-34
 
